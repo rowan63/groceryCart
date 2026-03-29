@@ -5,11 +5,16 @@ import { posts } from "@repo/db/data";
 export default async function Page({
   params,
 }: {
-  params: Promise<{ name: string }>;
+  params: Promise<{ tag: string }>;
 }) {
-  const { name } = await params;
+  const { tag } = await params;
   const filteredPosts = posts.filter(
-    (p) => p.active && p.category.toLowerCase() === name.toLowerCase()
+    (p) =>
+      p.active &&
+      p.tags
+        .split(",")
+        .map((t) => t.toLowerCase().replace(/\s+/g, "-"))
+        .includes(tag.toLowerCase())
   );
 
   return (

@@ -4,6 +4,7 @@ import { Main } from "../components/Main";
 import styles from "./page.module.css";
 
 export default function Home() {
+  // home screen - opnly show active posts
   const activePosts = posts.filter((p) => p.active);
   return (
     <AppLayout>

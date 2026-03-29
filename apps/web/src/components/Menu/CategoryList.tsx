@@ -14,7 +14,7 @@ export function CategoryList({ posts }: { posts: Post[] }) {
           name={item.name}
           isSelected={false}
           link={`/category/${toUrlPath(item.name)}`}
-          title=""
+          title={`Category / ${item.name}`}
         />
       ))}
     </>
