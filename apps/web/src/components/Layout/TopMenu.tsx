@@ -26,17 +26,14 @@ export function TopMenu({ query }: { query?: string }) {
   //       debounce - helper that makes sure it doesnt search after every letter
 
   return (
-    <div>
-      <form action="#" method="GET" className="grid flex-1 grid-cols-1">
-        <input
-          placeholder="Search"
-          defaultValue={query}
-          onChange={handleSearch}
-        />
-      </form>
-      <div className="flex items-center gap-x-6">
-        <ThemeSwitch />
-      </div>
+    <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-200 dark:border-gray-700">
+      <input
+        placeholder="Search"
+        defaultValue={query}
+        onChange={handleSearch}
+        className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 w-64 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+      />
+      <ThemeSwitch />
     </div>
   );
 }
