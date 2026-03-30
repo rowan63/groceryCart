@@ -1,15 +1,19 @@
 {
   "compilerOptions": {
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
     "esModuleInterop": true,
-    "module": "es2015",
-    "moduleResolution": "Bundler",
-    "target": "es5",
-    "lib": ["es2015", "dom"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
     "types": ["node"],
-    "typeRoots": ["node_modules/@types", "./support"],
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "baseUrl": ".",
+"paths": {
+  "@repo/db/*": ["../../packages/db/src/*"],
+  "@repo/env/*": ["../../packages/env/src/*"],
+  "@repo/utils/*": ["../../packages/utils/src/*"]
+}
   },
   "include": ["**/*.ts", "**/*.tsx"]
 }

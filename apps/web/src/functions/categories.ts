@@ -7,7 +7,7 @@ export function categories<T>(
     .filter((p) => p.active)
     .sort((a, b) => a.category.localeCompare(b.category))
     .reduce(
-      (acc, post) => {
+      (acc, post) => { 
         const category = acc.find((c) => c.name === post.category);
         if (category) {
           category.count++;
