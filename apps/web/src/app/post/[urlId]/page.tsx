@@ -16,11 +16,13 @@ export default async function Page({
 
   return (
     <AppLayout>
-      <article data-testid={`blog-post-${post.id}`}>
-        <h1>{post.title}</h1>
+      <article data-test-id={`blog-post-${post.id}`}>
+        <h1>
+          <a href={`/post/${post.urlId}`}>{post.title}</a>
+        </h1>
         <img src={post.imageUrl} alt={post.title} />
         <p>{post.category}</p>
-        <p>{post.date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
+        <p>{post.date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</p>
         <p>{post.views} views</p>
         <p>{post.likes} likes</p>
         <div>
@@ -28,7 +30,7 @@ export default async function Page({
             <span key={tag}>#{tag}</span>
           ))}
         </div>
-        <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+        <div data-test-id="content-markdown" dangerouslySetInnerHTML={{ __html: contentHtml }} />
       </article>
     </AppLayout>
   );

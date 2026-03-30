@@ -27,28 +27,26 @@ export async function HistoryList({
   selectedMonth?: string;
   posts: Post[];
 }) {
-  const historyItems = history(posts);
+  const historyItems = await history(posts);
 
   // TODO: use the "history" function on "functions" directory to get the history
   //       and render all history items using the SummaryItem component
   return (
     <>
       {historyItems.map((item) => {
-        const [year, month] = item.split("/");
-        const monthName = months[Number(month)];
-        const label = `${monthName}, ${year}`;
+        const monthName = months[item.month];
+        const label = `${monthName}, ${item.year}`;
         return (
           <SummaryItem
-            key={item}
+            key={`${item.year}/${item.month}`}
             name={label}
-            link={`/history/${year}/${month}`}
+            link={`/history/${item.year}/${item.month}`}
             title={`History / ${label}`}
-            count={posts.filter((p) => {
-              const y = p.date.getFullYear().toString();
-              const m = (p.date.getMonth() + 1).toString();
-              return y === year && m === month;
-            }).length}
-            isSelected={selectedYear === year && selectedMonth === month}
+            count={item.count}
+            isSelected={
+              selectedYear === item.year.toString() &&
+              selectedMonth === item.month.toString()
+            }
           />
         );
       })}

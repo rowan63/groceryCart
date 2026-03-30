@@ -12,7 +12,7 @@ export function LeftMenu() {
       <nav>
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <div>
-            <CategoryList posts={activePosts} />
+            <CategoryList posts={posts} />
           </div>
           <div>
             <HistoryList selectedYear="" selectedMonth="" posts={activePosts} />

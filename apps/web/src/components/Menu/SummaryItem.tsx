@@ -18,15 +18,15 @@ export function SummaryItem({
   // if if is selected it must show in different color/background
   return (
     <li>
-      <Link
+      <a
         href={link}
         title={title ?? name}
-        style={{ backgroundColor: isSelected ? "#e0e0e0" : "transparent", fontWeight: isSelected ? "bold" : "normal" }}
+        className={isSelected ? "selected" : ""}
       >
-        {name}
-        <span data-testid="post-count">{count}</span>
-      </Link>
+        <span>{name}</span>
+        {" "}
+        <span data-test-id="post-count">{count}</span>
+      </a>
     </li>
   );
-
 }
