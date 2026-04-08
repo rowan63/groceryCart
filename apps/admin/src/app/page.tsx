@@ -13,9 +13,9 @@ export default async function Home() {
   if (!loggedIn) {
     return (
     <main>
-      <h1>Sign into your account</h1>
+      <h1>Sign in to your account</h1>
       <form action={login}>
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password">Password</label>
         <input id="password" name="password" type="password" />
         <button type="submit">Sign In</button>
       </form>
