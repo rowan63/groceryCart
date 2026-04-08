@@ -1,11 +1,14 @@
-import { posts } from "@repo/db/data";
+import { client } from "@repo/db/client";
 import { isLoggedIn } from "../utils/auth";
 import { login, logout } from "./actions";
+import { PostList } from "./components/PostList";
 import styles from "./page.module.css";
+
 export default async function Home() {
   // use the is logged in function to check if user is authorised
   // we will use the cookie based approach
   const loggedIn = await isLoggedIn();
+  const posts = await client.db.post.findMany();
 
   if (!loggedIn) {
     return (
@@ -25,11 +28,7 @@ export default async function Home() {
         <form action={logout}>
           <button type="submit">Logout</button>
         </form>
-        <ul>
-          {posts.map((p) => (
-            <li key={p.id}>{p.title}</li>
-          ))}
-        </ul>
+        <PostList posts={posts} />
       </main>
     );
   }

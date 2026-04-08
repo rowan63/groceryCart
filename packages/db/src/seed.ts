@@ -1,5 +1,5 @@
-import { client } from "./index";
-import { posts } from "./data";
+import { client } from "./client.js";
+import { posts } from "./data.js";
 
 export async function seed() {
   console.log("🌱 Seeding data");
@@ -34,3 +34,4 @@ export async function seed() {
     }
   }
 }
+seed().then(() => console.log("Done")).catch(console.error);
