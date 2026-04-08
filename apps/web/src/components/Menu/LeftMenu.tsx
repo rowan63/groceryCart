@@ -12,7 +12,7 @@ export function LeftMenu() {
         <ul className="flex flex-col gap-6">
           <div>
             <p className="text-xs font-semibold uppercase text-gray-400 mb-2">Categories</p>
-            <CategoryList posts={posts} />
+            <CategoryList posts={activePosts} />
           </div>
           <div>
             <p className="text-xs font-semibold uppercase text-gray-400 mb-2">History</p>

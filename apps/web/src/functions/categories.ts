@@ -6,6 +6,7 @@ export function categories<T>(
   return posts
     .filter((p) => p.active)
     .sort((a, b) => a.category.localeCompare(b.category))
+    // sorts alphabetically then reduces to make only 1 type of each category
     .reduce(
       (acc, post) => { 
         const category = acc.find((c) => c.name === post.category);
