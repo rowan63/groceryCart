@@ -50,3 +50,26 @@ export async function updatePost(urlId: string, formData: FormData) {
 
     redirect("/");
 }
+
+export async function createPost(formData: FormData) {
+    const data = {
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        content: formData.get('content') as string,
+        imageUrl: formData.get('imageUrl') as string,
+        tags: formData.get('tags') as string,
+    }
+
+    const result = postSchema.safeParse(data);
+    if (!result.success) {
+        return { error: result.error.format() };
+    }
+
+    const urlId = result.data.title.toLowerCase().replace(/\s+/g, '-');
+
+    await client.db.post.create({
+        data: { ...result.data, urlId },
+    });
+
+    redirect("/");
+}
