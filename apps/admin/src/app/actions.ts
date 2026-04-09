@@ -25,10 +25,11 @@ export async function logout() {
 
 
 const postSchema = z.object({
-    title: z.string().min(1, "Title is required"),
-    description: z.string().min(1, "Description is required").max(200, "Description is too long. Maximum is 200 characters"), content: z.string().min(1, "Content is required"),
+    title: z.string().trim().min(1, "Title is required"),
+    description: z.string().trim().min(1, "Description is required").max(200, "Description is too long. Maximum is 200 characters"), 
+    content: z.string().trim().min(1, "Content is required"),
     imageUrl: z.string().min(1, "Image URL is required").url("This is not a valid URL"),
-    tags: z.string().min(1, "At least one tag is required")
+    tags: z.string().trim().min(1, "At least one tag is required")
 })
 
 export async function updatePost(urlId: string, formData: FormData) {
@@ -50,7 +51,7 @@ export async function updatePost(urlId: string, formData: FormData) {
         data: result.data,
     });
 
-    return { success: true };
+    redirect("/");
 }
 
 export async function createPost(formData: FormData) {

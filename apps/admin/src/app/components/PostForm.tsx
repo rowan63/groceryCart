@@ -2,8 +2,6 @@
 import { useState, useRef, useEffect } from "react";
 import type { Post } from "@prisma/client";
 import { updatePost, createPost } from "../actions";
-import { useRouter } from "next/navigation";
-
 
 type Errors = {
     _errors?: string[];
@@ -29,13 +27,17 @@ export function PostForm({ post }: { post?: Post }) {
 
     useEffect(() => {
         if (prevPreview.current === true && preview === false) {
-            if (contentRef.current) {
-                contentRef.current.focus();
-                contentRef.current.setSelectionRange(cursorPos.current, cursorPos.current);
-            }
+            requestAnimationFrame(() => {
+                if (contentRef.current) {
+                    contentRef.current.focus();
+                    contentRef.current.setSelectionRange(cursorPos.current, cursorPos.current);
+                }
+            });
         }
         prevPreview.current = preview;
     }, [preview]);
+
+
 
     async function handleSave() {
         setErrors({});
@@ -59,9 +61,6 @@ export function PostForm({ post }: { post?: Post }) {
     }
 
     function handlePreview() {
-        if (contentRef.current) {
-            cursorPos.current = contentRef.current.selectionStart ?? 0;
-        }
         setPreview(true);
     }
 
@@ -88,8 +87,7 @@ export function PostForm({ post }: { post?: Post }) {
                         {preview ? (
                             <div data-test-id="content-preview" className="border border-gray-300 rounded-md px-3 py-2 text-sm min-h-40 prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
                         ) : (
-                            <textarea id="content" ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} rows={8} className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none font-mono" />
-                        )}
+                            <textarea id="content" ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} onSelect={(e) => { cursorPos.current = (e.target as HTMLTextAreaElement).selectionStart; }} rows={8} className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none font-mono" />)}
                         {errors.content?._errors?.[0] && <p className="text-xs text-red-500">{errors.content._errors[0]}</p>}
                         <button type="button" onClick={preview ? handleClosePreview : handlePreview} className="self-start text-xs text-gray-600 border border-gray-300 rounded-md px-3 py-1.5 hover:bg-gray-50">
                             {preview ? "Close Preview" : "Preview"}
@@ -122,3 +120,4 @@ export function PostForm({ post }: { post?: Post }) {
             .replace(/\*(.+?)\*/g, "<em>$1</em>")
             .replace(/\n/g, "<br />");
     }
+}
