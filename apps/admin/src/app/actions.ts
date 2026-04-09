@@ -9,7 +9,10 @@ export async function login(formData: FormData) {
     const password = formData.get('password') as string;
     if (password === "123") {
         const cookieStore = await cookies();
-        cookieStore.set("auth_token", "authenticated", { httpOnly: true });
+        cookieStore.set("auth_token", "authenticated", {
+            httpOnly: true,
+            path: "/",
+        });
     }
     redirect("/");
 }
@@ -23,8 +26,7 @@ export async function logout() {
 
 const postSchema = z.object({
     title: z.string().min(1, "Title is required"),
-    description: z.string().max(200, "Description is too long. Maximum is 200 characters").min(1, "Description is required"),
-    content: z.string().min(1, "Content is required"),
+    description: z.string().min(1, "Description is required").max(200, "Description is too long. Maximum is 200 characters"), content: z.string().min(1, "Content is required"),
     imageUrl: z.string().min(1, "Image URL is required").url("This is not a valid URL"),
     tags: z.string().min(1, "At least one tag is required")
 })
@@ -48,7 +50,7 @@ export async function updatePost(urlId: string, formData: FormData) {
         data: result.data,
     });
 
-    redirect("/");
+    return { success: true };
 }
 
 export async function createPost(formData: FormData) {

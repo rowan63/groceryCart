@@ -34,4 +34,6 @@ export async function seed() {
     }
   }
 }
-seed().then(() => console.log("Done")).catch(console.error);
+if (process.argv[1]?.includes('seed')) {
+    seed().then(() => console.log("Done")).catch(console.error);
+}

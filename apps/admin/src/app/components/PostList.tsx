@@ -61,7 +61,7 @@ export function PostList({ posts }: { posts: Post[] }) {
                     <p>{post.category}</p>
                     <p>{post.tags.split(",").map(t => `#${t.trim()}`).join(", ")}</p>
                     <button onClick={() => alert("Status changed")}>{post.active ? "Active" : "Inactive"}</button>
-                    <p>Posted on {new Date(post.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
+                    <p>Posted on {new Date(post.date).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</p>
                 </article>
             ))}
         </div>

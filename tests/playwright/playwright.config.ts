@@ -65,7 +65,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:3002",
       },
-      dependencies: process.env.CI ? ["setup"] : []
+      dependencies: ["setup"]
     },
     {
       name: "chromium",
@@ -74,7 +74,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:3001",
       },
-      dependencies: process.env.CI ? ["setup"] : [],
+      dependencies: ["setup"]
     },
 
     // {
@@ -112,22 +112,28 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: process.env.CI ? [
-  {
-    reuseExistingServer: true,
-    command: "pnpm start:admin",
-    url: "http://localhost:3002",
-  },
-  {
-    reuseExistingServer: true,
-    command: "pnpm start:web",
-    url: "http://localhost:3001",
-  },
-] : [
-  {
-    reuseExistingServer: true,
-    url: "http://localhost:3001",
-    command: "pnpm --filter web dev",
-    timeout: 5000,
-  },
-],
+    {
+      reuseExistingServer: true,
+      command: "pnpm start:admin",
+      url: "http://localhost:3002",
+    },
+    {
+      reuseExistingServer: true,
+      command: "pnpm start:web",
+      url: "http://localhost:3001",
+    },
+  ] : [
+    {
+      reuseExistingServer: true,
+      url: "http://localhost:3001",
+      command: "pnpm --filter web dev",
+      timeout: 5000,
+    },
+    {
+      reuseExistingServer: true,
+      url: "http://localhost:3002",
+      command: "pnpm --filter admin dev",
+      timeout: 10000,
+    },
+  ],
 });

@@ -1,9 +1,12 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { Post } from "@prisma/client";
-import { updatePost } from "../actions";
+import { updatePost, createPost } from "../actions";
+import { useRouter } from "next/navigation";
+
 
 type Errors = {
+    _errors?: string[];
     title?: { _errors: string[] };
     description?: { _errors: string[] };
     content?: { _errors: string[] };
@@ -22,8 +25,22 @@ export function PostForm({ post }: { post?: Post }) {
     const [preview, setPreview] = useState(false);
     const contentRef = useRef<HTMLTextAreaElement>(null);
     const cursorPos = useRef<number>(0);
+    const prevPreview = useRef(false);
+
+    useEffect(() => {
+        if (prevPreview.current === true && preview === false) {
+            if (contentRef.current) {
+                contentRef.current.focus();
+                contentRef.current.setSelectionRange(cursorPos.current, cursorPos.current);
+            }
+        }
+        prevPreview.current = preview;
+    }, [preview]);
 
     async function handleSave() {
+        setErrors({});
+        setSaveError("");
+
         const formData = new FormData();
         formData.set("title", title);
         formData.set("description", description);
@@ -31,9 +48,12 @@ export function PostForm({ post }: { post?: Post }) {
         formData.set("imageUrl", imageUrl);
         formData.set("tags", tags);
 
-        const result = await updatePost(post?.urlId ?? "", formData);
+        const result = post
+            ? await updatePost(post.urlId, formData)
+            : await createPost(formData);
+
         if (result?.error) {
-            setErrors(result.error as Errors);
+            setErrors(result.error as unknown as Errors);
             setSaveError("Please fix the errors before saving");
         }
     }
@@ -47,12 +67,6 @@ export function PostForm({ post }: { post?: Post }) {
 
     function handleClosePreview() {
         setPreview(false);
-        requestAnimationFrame(() => {
-            if (contentRef.current) {
-                contentRef.current.focus();
-                contentRef.current.setSelectionRange(cursorPos.current, cursorPos.current);
-            }
-        });
     }
 
     return (
@@ -60,21 +74,21 @@ export function PostForm({ post }: { post?: Post }) {
             <div>
                 <label htmlFor="title">Title</label>
                 <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
-                {errors.title?._errors[0] && <p>{errors.title._errors[0]}</p>}
+                {errors.title?._errors?.[0] && <p>{errors.title._errors[0]}</p>}
             </div>
             <div>
                 <label htmlFor="description">Description</label>
                 <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-                {errors.description?._errors[0] && <p>{errors.description._errors[0]}</p>}
+                {errors.description?._errors?.[0] && <p>{errors.description._errors[0]}</p>}
             </div>
             <div>
                 <label htmlFor="content">Content</label>
                 {preview ? (
-                    <div data-testid="content-preview" dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
+                    <div data-test-id="content-preview" dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
                 ) : (
                     <textarea id="content" ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} />
                 )}
-                {errors.content?._errors[0] && <p>{errors.content._errors[0]}</p>}
+                {errors.content?._errors?.[0] && <p>{errors.content._errors[0]}</p>}
                 <button type="button" onClick={preview ? handleClosePreview : handlePreview}>
                     {preview ? "Close Preview" : "Preview"}
                 </button>
@@ -82,13 +96,13 @@ export function PostForm({ post }: { post?: Post }) {
             <div>
                 <label htmlFor="imageUrl">Image URL</label>
                 <input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
-                {errors.imageUrl?._errors[0] && <p>{errors.imageUrl._errors[0]}</p>}
-                <img data-testid="image-preview" src={imageUrl} alt="preview" />
+                {errors.imageUrl?._errors?.[0] && <p>{errors.imageUrl._errors[0]}</p>}
+                <img data-test-id="image-preview" src={imageUrl} alt="preview" />
             </div>
             <div>
                 <label htmlFor="tags">Tags</label>
                 <input id="tags" value={tags} onChange={(e) => setTags(e.target.value)} />
-                {errors.tags?._errors[0] && <p>{errors.tags._errors[0]}</p>}
+                {errors.tags?._errors?.[0] && <p>{errors.tags._errors[0]}</p>}
             </div>
             {saveError && <p>{saveError}</p>}
             <button type="button" onClick={handleSave}>Save</button>
