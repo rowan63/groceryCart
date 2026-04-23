@@ -8,6 +8,7 @@ export default async function Page({
   params: Promise<{ tag: string }>;
 }) {
   const { tag } = await params;
+  // again
   const filteredPosts = posts.filter(
     (p) =>
       p.active &&

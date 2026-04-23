@@ -8,6 +8,7 @@ export default async function Page({
   params: Promise<{ name: string }>;
 }) {
   const { name } = await params;
+  // folder name gets replaced 
   const filteredPosts = posts.filter(
     (p) => p.active && p.category.toLowerCase() === name.toLowerCase()
   );

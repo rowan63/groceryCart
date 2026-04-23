@@ -13,6 +13,7 @@ export default async function Page({
   if (!post) return <AppLayout>Article not found</AppLayout>;
 
   const contentHtml = await marked(post.content);
+  // converts markdown to html
 
   return (
     <AppLayout>
@@ -35,6 +36,7 @@ export default async function Page({
           </div>
         </div>
         <div data-test-id="content-markdown" className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: contentHtml }} />
+        {/* dangerouslySetInnerHTML inserts the data into a div element */}
       </article>
     </AppLayout>
   );
