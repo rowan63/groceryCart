@@ -14,12 +14,14 @@ type Errors = {
 
 export function PostForm({ post }: { post?: Post }) {
     const [title, setTitle] = useState(post?.title ?? "");
+    const [category, setCategory] = useState(post?.category ?? "");
     const [description, setDescription] = useState(post?.description ?? "");
     const [content, setContent] = useState(post?.content ?? "");
     const [imageUrl, setImageUrl] = useState(post?.imageUrl ?? "");
     const [tags, setTags] = useState(post?.tags ?? "");
     const [errors, setErrors] = useState<Errors>({});
     const [saveError, setSaveError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
     const [preview, setPreview] = useState(false);
     const contentRef = useRef<HTMLTextAreaElement>(null);
     const cursorPos = useRef<number>(0);
@@ -37,14 +39,14 @@ export function PostForm({ post }: { post?: Post }) {
         prevPreview.current = preview;
     }, [preview]);
 
-
-
     async function handleSave() {
         setErrors({});
         setSaveError("");
+        setSuccessMessage("");
 
         const formData = new FormData();
         formData.set("title", title);
+        formData.set("category", category);
         formData.set("description", description);
         formData.set("content", content);
         formData.set("imageUrl", imageUrl);
@@ -57,6 +59,8 @@ export function PostForm({ post }: { post?: Post }) {
         if (result?.error) {
             setErrors(result.error as unknown as Errors);
             setSaveError("Please fix the errors before saving");
+        } else {
+            setSuccessMessage("Post updated successfully");
         }
     }
 
@@ -76,6 +80,10 @@ export function PostForm({ post }: { post?: Post }) {
                         <label htmlFor="title" className="text-sm font-medium text-gray-700">Title</label>
                         <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
                         {errors.title?._errors?.[0] && <p className="text-xs text-red-500">{errors.title._errors[0]}</p>}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="category" className="text-sm font-medium text-gray-700">Category</label>
+                        <input id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
                     </div>
                     <div className="flex flex-col gap-1">
                         <label htmlFor="description" className="text-sm font-medium text-gray-700">Description</label>
@@ -105,6 +113,7 @@ export function PostForm({ post }: { post?: Post }) {
                         {errors.tags?._errors?.[0] && <p className="text-xs text-red-500">{errors.tags._errors[0]}</p>}
                     </div>
                     {saveError && <p className="text-sm text-red-500 font-medium">{saveError}</p>}
+                    {successMessage && <p className="text-sm text-green-500 font-medium">{successMessage}</p>}
                     <button type="button" onClick={handleSave} className="self-start bg-gray-900 text-white rounded-md px-5 py-2 text-sm font-medium hover:bg-gray-700">Save</button>
                 </div>
             </div>

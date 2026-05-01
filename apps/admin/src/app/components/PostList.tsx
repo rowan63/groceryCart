@@ -2,6 +2,8 @@
 
 import type { Post } from "@prisma/client";
 import { useState } from "react";
+import { toggleActive } from "../actions";
+
 
 export function PostList({ posts }: { posts: Post[] }) {
     const [search, setSearch] = useState("");
@@ -9,8 +11,10 @@ export function PostList({ posts }: { posts: Post[] }) {
     const [date, setDate] = useState("");
     const [sort, setSort] = useState("date-desc");
     const [visibility, setVisibility] = useState("all");
+    const [postList, setPostList] = useState(posts);
 
-    const filtered = posts.filter((p) => {
+
+    const filtered = postList.filter((p) => {
         if (search && !p.title.includes(search) && !p.content.includes(search)) return false;
         if (tag && !p.tags.includes(tag)) return false;
         if (date && new Date(p.date) < new Date(date)) return false;
@@ -72,7 +76,12 @@ export function PostList({ posts }: { posts: Post[] }) {
                             <a href={`/post/${post.urlId}`} className="text-base font-semibold text-gray-900 hover:text-gray-600">{post.title}</a>
                             <p className="text-xs text-gray-500">{post.tags.split(",").map((t: string) => `#${t.trim()}`).join(", ")}</p>
                             <div className="mt-auto flex items-center gap-2">
-                                <button onClick={() => alert("Status changed")} className={`text-xs px-2 py-1 rounded-full font-medium ${post.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                                <button
+                                    onClick={async () => {
+                                        await toggleActive(post.id, post.active);
+                                        setPostList(postList.map(p => p.id === post.id ? { ...p, active: !p.active } : p));
+                                    }}
+                                    className={`text-xs px-2 py-1 rounded-full font-medium ${post.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
                                     {post.active ? "Active" : "Inactive"}
                                 </button>
                                 <span className="text-xs text-gray-400">Posted on {new Date(post.date).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</span>

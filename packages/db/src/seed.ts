@@ -22,6 +22,7 @@ export async function seed() {
         date: post.date,
         id: post.id,
         views: post.views,
+        likes: post.likes,
       },
     });
     for (let i = 0; i < post.likes; i++) {
@@ -35,5 +36,5 @@ export async function seed() {
   }
 }
 if (process.argv[1]?.includes('seed')) {
-    seed().then(() => console.log("Done")).catch(console.error);
+  seed().then(() => console.log("Done")).catch(console.error);
 }
