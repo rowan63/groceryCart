@@ -13,9 +13,6 @@ export function SummaryItem({
   isSelected: boolean;
   title?: string;
 }) {
-  // TODO: Implement the summary item
-  // must show the number of posts in that category and the name
-  // if if is selected it must show in different color/background
   return (
     <li>
       <a
@@ -25,7 +22,7 @@ export function SummaryItem({
         <span>{name}</span>
         {" "}
         <span data-test-id="post-count">{count}</span>
-      </a>
+      </a>v
     </li>
   );
 }
