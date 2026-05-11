@@ -1,6 +1,5 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
-import { Main } from "@/components/Main";
-import { posts } from "@repo/db/data";
+import { client } from "@repo/db/client";
 
 export default async function Page({
   searchParams,
@@ -8,16 +7,19 @@ export default async function Page({
   searchParams: Promise<{ q: string }>;
 }) {
   const { q } = await searchParams;
-  const filteredPosts = posts.filter(
-    (p) =>
-      p.active &&
-      (p.title.toLowerCase().includes(q.toLowerCase()) ||
-        p.description.toLowerCase().includes(q.toLowerCase()))
-  );
+  const products = await client.db.product.findMany({
+    where: {
+      active: true,
+      OR: [
+        { name: { contains: q } },
+        { description: { contains: q } },
+      ]
+    }
+  });
 
   return (
     <AppLayout query={q}>
-      <Main posts={filteredPosts} />
+      <div>{products.map(p => <div key={p.id}>{p.name}</div>)}</div>
     </AppLayout>
   );
 }

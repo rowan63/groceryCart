@@ -1,16 +1,16 @@
-import type { Post } from "@prisma/client";
-import BlogList from "./Blog/List";
+import type { Product } from "@prisma/client";
+import ProductList from "./Blog/List";
 
 export function Main({
-  posts,
+  products,
   className,
 }: {
-  posts: Post[];
+  products: Product[];
   className?: string;
 }) {
   return (
     <main className={className}>
-      <BlogList posts={posts} />
+      <ProductList products={products} />
     </main>
   );
 }
