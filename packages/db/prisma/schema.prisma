@@ -10,27 +10,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id          Int      @id @default(autoincrement())
-  urlId       String   @unique
-  title       String
-  content     String   @default("")
-  description String   @default("")
-  imageUrl    String   @default("")
-  category    String   @default("")
-  tags        String   @default("")
-  date        DateTime @default(now())
-  views       Int      @default(0)
-  active      Boolean  @default(true)
-  Likes       Like[]
-  likes       Int      @default(0)  
-  // Incomplete
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String    @default("")
+  role      String    @default("user")
+  createdAt DateTime  @default(now())
+  orders    Order[]
 }
 
-model Like {
-  postId Int
-  userIP String
-  Post   Post   @relation(fields: [postId], references: [id])
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String      @default("")
+  price       Float
+  imageUrl    String      @default("")
+  category    String
+  subcategory String      @default("")
+  stock       Int         @default(0)
+  active      Boolean     @default(true)
+  orderItems  OrderItem[]
+}
 
-  @@id([postId, userIP])
+model Order {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  total     Float
+  createdAt DateTime    @default(now())
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
 }
