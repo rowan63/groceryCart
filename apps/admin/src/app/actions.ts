@@ -4,12 +4,15 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { client } from "@repo/db/client";
 import { z } from "zod";
+import jwt from "jsonwebtoken";
+import { env } from "@repo/env/admin";
 
 export async function login(formData: FormData) {
     const password = formData.get('password') as string;
     if (password === "123") {
+        const token = jwt.sign({ authenticated: true }, env.JWT_SECRET || "secret");
         const cookieStore = await cookies();
-        cookieStore.set("auth_token", "authenticated", {
+        cookieStore.set("auth_token", token, {
             httpOnly: true,
             path: "/",
         });
@@ -29,7 +32,8 @@ const postSchema = z.object({
     description: z.string().trim().min(1, "Description is required").max(200, "Description is too long. Maximum is 200 characters"), 
     content: z.string().trim().min(1, "Content is required"),
     imageUrl: z.string().min(1, "Image URL is required").url("This is not a valid URL"),
-    tags: z.string().trim().min(1, "At least one tag is required")
+    tags: z.string().trim().min(1, "At least one tag is required"),
+    category: z.string().trim().min(1, "Category is required"),
 })
 
 export async function updatePost(urlId: string, formData: FormData) {
@@ -39,6 +43,7 @@ export async function updatePost(urlId: string, formData: FormData) {
         content: formData.get('content') as string,
         imageUrl: formData.get('imageUrl') as string,
         tags: formData.get('tags') as string,
+        category: formData.get('category') as string,
     }
 
     const result = postSchema.safeParse(data);
@@ -51,7 +56,7 @@ export async function updatePost(urlId: string, formData: FormData) {
         data: result.data,
     });
 
-    redirect("/");
+    return { success: true };
 }
 
 export async function createPost(formData: FormData) {
@@ -61,6 +66,7 @@ export async function createPost(formData: FormData) {
         content: formData.get('content') as string,
         imageUrl: formData.get('imageUrl') as string,
         tags: formData.get('tags') as string,
+        category: formData.get('category') as string,
     }
 
     const result = postSchema.safeParse(data);
@@ -74,5 +80,12 @@ export async function createPost(formData: FormData) {
         data: { ...result.data, urlId },
     });
 
-    redirect("/");
+    return { success: true };
+}
+
+export async function toggleActive(id: number, active: boolean) {
+    await client.db.post.update({
+        where: { id },
+        data: { active: !active },
+    });
 }

@@ -1,29 +1,45 @@
-import { client } from "./client.js";
-import { posts } from "./data.js";
-
 export async function seed() {
-  console.log("🌱 Seeding data");
+  // NodeNext module resolution requires explicit extensions for relative imports.
+  const { client } = await import("./client.js");
+  const { posts } = await import("./data.js");
+
+  /**
+   * Deterministic seeding used by Playwright.
+   *
+   * Summary:
+   * - Tests need predictable data every run.
+   * - We wipe the tables and insert the same 4 demo posts (id 1..4).
+   * - Likes are stored in 2 places:
+   *   1) `Post.likes` (the counter we display)
+   *   2) `Like` rows (so we can enforce "one like per user/IP")
+   */
+  const seedPosts = posts.filter((p: { id: number }) => p.id <= 4);
+
   await client.db.like.deleteMany();
   await client.db.post.deleteMany();
-  for (const post of posts) {
+
+  for (const post of seedPosts) {
     await client.db.post.create({
       data: {
+        id: post.id,
+        urlId: post.urlId,
         title: post.title,
         content: post.content,
-        category: post.category,
         description: post.description,
         imageUrl: post.imageUrl,
+        category: post.category,
         tags: post.tags
           .split(",")
-          .map((p) => p.trim())
+          .map((t: string) => t.trim())
           .join(","),
-        urlId: post.urlId,
-        active: post.active,
         date: post.date,
-        id: post.id,
         views: post.views,
+        likes: post.likes,
+        active: post.active,
       },
     });
+
+    // create like entries so we can enforce "one like per IP"
     for (let i = 0; i < post.likes; i++) {
       await client.db.like.create({
         data: {
@@ -33,7 +49,4 @@ export async function seed() {
       });
     }
   }
-}
-if (process.argv[1]?.includes('seed')) {
-    seed().then(() => console.log("Done")).catch(console.error);
 }

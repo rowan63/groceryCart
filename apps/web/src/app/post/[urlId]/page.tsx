@@ -1,6 +1,7 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
-import { posts } from "@repo/db/data";
+import { client } from "@repo/db/client";
 import { marked } from "marked";
+import { LikeButton } from "@/components/LikeButton";
 
 export default async function Page({
   params,
@@ -8,9 +9,14 @@ export default async function Page({
   params: Promise<{ urlId: string }>;
 }) {
   const { urlId } = await params;
-  const post = posts.find((p) => p.urlId === urlId);
+  const post = await client.db.post.findUnique({ where: { urlId } });
 
   if (!post) return <AppLayout>Article not found</AppLayout>;
+
+  await client.db.post.update({
+    where: { urlId },
+    data: { views: { increment: 1 } }
+  });
 
   const contentHtml = await marked(post.content);
   // converts markdown to html
@@ -28,7 +34,7 @@ export default async function Page({
         <img src={post.imageUrl} alt={post.title} className="w-full h-64 object-cover rounded-xl mb-6" />
         <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-6">
           <span>{post.views} views</span>
-          <span>{post.likes} likes</span>
+          <LikeButton postId={post.id} initialLikes={post.likes} />
           <div className="flex gap-2">
             {post.tags.split(",").map((tag) => (
               <span key={tag} className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">#{tag}</span>
