@@ -1,17 +1,11 @@
 export async function history(
-  posts: { date: Date; active: boolean }[]
+  orders: { createdAt: Date }[]
 ): Promise<{ month: number; year: number; count: number }[]> {
-  // Implement per specification
-  // Return the ordered list of "month, year" strings sorted from most recent to oldes
-  // consider only active posts
-
-  const filtered = posts.filter((p) => p.active);
-
   const map = new Map<string, { month: number; year: number; count: number }>();
 
-  for (const post of filtered) {
-    const year = post.date.getFullYear();
-    const month = post.date.getMonth() + 1;
+  for (const order of orders) {
+    const year = order.createdAt.getFullYear();
+    const month = order.createdAt.getMonth() + 1;
     const key = `${year}/${month}`;
 
     if (map.has(key)) {
