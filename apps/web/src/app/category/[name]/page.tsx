@@ -1,6 +1,5 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
-import { Main } from "@/components/Main";
-import { posts } from "@repo/db/data";
+import { client } from "@repo/db/client";
 
 export default async function Page({
   params,
@@ -8,14 +7,13 @@ export default async function Page({
   params: Promise<{ name: string }>;
 }) {
   const { name } = await params;
-  // folder name gets replaced 
-  const filteredPosts = posts.filter(
-    (p) => p.active && p.category.toLowerCase() === name.toLowerCase()
-  );
+  const products = await client.db.product.findMany({
+    where: { active: true, category: name }
+  });
 
   return (
     <AppLayout>
-      <Main posts={filteredPosts} />
+      <div>{products.map(p => <div key={p.id}>{p.name}</div>)}</div>
     </AppLayout>
   );
 }

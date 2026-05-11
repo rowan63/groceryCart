@@ -21,8 +21,8 @@ export function SummaryItem({
         className={`flex justify-between items-center py-1 px-2 rounded text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${isSelected ? "selected bg-indigo-100 dark:bg-indigo-900 font-semibold text-indigo-700 dark:text-indigo-300" : ""}`}      >
         <span>{name}</span>
         {" "}
-        <span data-test-id="post-count">{count}</span>
-      </a>v
+        <span data-test-id="count">{count}</span>
+      </a>
     </li>
   );
 }
