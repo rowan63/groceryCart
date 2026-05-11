@@ -15,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Full-Stack Blog",
-  description: "Blog about full stack development",
+  title: "Grocery Cart",
+  description: "Buy all of you're favourite groceries online!",
 };
 
 export default async function RootLayout({

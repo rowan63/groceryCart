@@ -1,41 +1,23 @@
+"use client";
+
 import { history } from "@/functions/history";
-import { type Post } from "@repo/db/data";
+import { useEffect, useState } from "react";
 import { SummaryItem } from "./SummaryItem";
 
-const months = [
-  "",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+const months = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
 
-export async function HistoryList({
-  selectedYear,
-  selectedMonth,
-  posts,
-}: {
-  selectedYear?: string;
-  selectedMonth?: string;
-  posts: Post[];
-}) {
-  const historyItems = await history(posts);
+export function HistoryList({ selectedYear, selectedMonth, orders }: { selectedYear?: string; selectedMonth?: string; orders: { createdAt: Date }[] }) {
+  const [historyItems, setHistoryItems] = useState<{ month: number; year: number; count: number }[]>([]);
 
-  // TODO: use the "history" function on "functions" directory to get the history
-  //       and render all history items using the SummaryItem component
+   useEffect(() => {
+    history(orders).then(setHistoryItems);
+  }, [orders]);
+
+
   return (
     <>
       {historyItems.map((item) => {
-        const monthName = months[item.month];
-        const label = `${monthName}, ${item.year}`;
+        const label = `${months[item.month]}, ${item.year}`;
         return (
           <SummaryItem
             key={`${item.year}/${item.month}`}
@@ -43,10 +25,7 @@ export async function HistoryList({
             link={`/history/${item.year}/${item.month}`}
             title={`History / ${label}`}
             count={item.count}
-            isSelected={
-              selectedYear === item.year.toString() &&
-              selectedMonth === item.month.toString()
-            }
+            isSelected={selectedYear === item.year.toString() && selectedMonth === item.month.toString()}
           />
         );
       })}
