@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { AuthButtons } from "../Menu/AuthButtons";
 import ThemeSwitch from "../Themes/ThemeSwitcher";
 
 function debounce<T extends (...args: Any[]) => Any>(fn: T, delay = 300) {
@@ -33,7 +34,10 @@ export function TopMenu({ query }: { query?: string }) {
         onChange={handleSearch}
         className="border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 w-64 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
       />
-      <ThemeSwitch />
+      <div className="flex items-center gap-3">
+        <AuthButtons />
+        <ThemeSwitch />
+      </div>
     </div>
   );
 }
