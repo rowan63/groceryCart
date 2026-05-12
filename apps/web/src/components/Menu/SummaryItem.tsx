@@ -9,7 +9,7 @@ export function SummaryItem({
 }: {
   name: string;
   link: string;
-  count: number;
+  count?: number;
   isSelected: boolean;
   title?: string;
 }) {
