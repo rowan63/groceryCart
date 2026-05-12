@@ -11,6 +11,10 @@ export default function LoginPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!email.includes("@") || !email.includes(".")) {
+      setError("Please enter a valid email address");
+      return;
+    }
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -31,7 +35,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <input type="text" value={email} onChange={e => setEmail(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>

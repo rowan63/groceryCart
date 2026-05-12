@@ -12,6 +12,18 @@ export default function RegisterPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!name) {
+      setError("Please enter your name");
+      return;
+    }
+    if (!email.includes("@") || !email.includes(".")) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    if (!password) {
+      setError("Please enter a password");
+      return;
+    }
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -36,7 +48,7 @@ export default function RegisterPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <input type="text" value={email} onChange={e => setEmail(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>

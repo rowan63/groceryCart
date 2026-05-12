@@ -5,10 +5,7 @@ import { useEffect, useState } from "react";
 
 export function AuthButtons() {
   const router = useRouter();
-  const [loggedIn, setLoggedIn] = useState<boolean | null>(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("loggedIn") === "true";
-  });
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/user")
