@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { Content } from "../Content";
 import { LeftMenu } from "../Menu/LeftMenu";
+import { RightMenu } from "../Menu/RightMenu";
 import { TopMenu } from "./TopMenu";
 
 export async function AppLayout({
@@ -14,6 +15,7 @@ export async function AppLayout({
         <TopMenu query={query} />
         {children}
       </Content>
+      <RightMenu />
     </div>
   );
 }
