@@ -13,11 +13,9 @@ export function AuthButtons() {
       .then(data => {
         const isLoggedIn = !!data.userId;
         setLoggedIn(isLoggedIn);
-        localStorage.setItem("loggedIn", String(isLoggedIn));
       })
       .catch(() => {
         setLoggedIn(false);
-        localStorage.setItem("loggedIn", "false");
       });
   }, []);
 

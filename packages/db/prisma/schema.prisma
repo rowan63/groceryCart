@@ -18,6 +18,7 @@ model User {
   role      String    @default("user")
   createdAt DateTime  @default(now())
   orders    Order[]
+  cart      Cart?
 }
 
 model Product {
@@ -31,6 +32,7 @@ model Product {
   stock       Int         @default(0)
   active      Boolean     @default(true)
   orderItems  OrderItem[]
+  cartItems   CartItem[]
 }
 
 model Order {
@@ -50,4 +52,21 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
   price     Float
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
 }
