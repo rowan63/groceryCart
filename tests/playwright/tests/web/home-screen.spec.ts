@@ -6,6 +6,13 @@ test.beforeAll(async () => {
 });
 
 test.describe("HOME SCREEN", () => {
+  test("Add to cart when logged out redirects to login", { tag: "@a1" }, async ({ page }) => {
+    await page.context().clearCookies();
+    await page.goto("/");
+    await page.locator('[data-test-id^="product-"]').first().getByText("Add to cart").click();
+    await expect(page).toHaveURL(/\/login/);
+  });
+  
   test("Show 15 products", { tag: "@a1" }, async ({ page }) => {
     await page.goto("/");
     const articles = page.locator('[data-test-id^="product-"]');
@@ -68,12 +75,6 @@ test.describe("HOME SCREEN", () => {
   test("Register link shows when logged out", { tag: "@a1" }, async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("link", { name: /register/i })).toBeVisible();
-  });
-
-  test("Add to cart when logged out redirects to login", { tag: "@a1" }, async ({ page }) => {
-    await page.goto("/");
-    await page.locator('[data-test-id^="product-"]').first().getByText("Add to cart").click();
-    await expect(page).toHaveURL(/\/login/);
   });
 
   test("Clicking product navigates to detail page", { tag: "@a1" }, async ({ page }) => {
