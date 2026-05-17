@@ -2,13 +2,10 @@ import { client } from "@repo/db/client";
 import { isLoggedIn } from "../utils/auth";
 import { login, logout } from "./actions";
 import { PostList } from "./components/PostList";
-import styles from "./page.module.css";
 
 export default async function Home() {
-  // use the is logged in function to check if user is authorised
-  // we will use the cookie based approach
   const loggedIn = await isLoggedIn();
-  const posts = await client.db.post.findMany();
+  const products = await client.db.product.findMany();
 
   if (!loggedIn) {
     return (
@@ -30,12 +27,12 @@ export default async function Home() {
       <main className="min-h-screen bg-gray-50">
         <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Admin of Full Stack Blog</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Admin of Grocery Store</h1>
             <form action={logout}>
               <button type="submit" className="text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-md px-3 py-1.5">Logout</button>
             </form>
           </div>
-          <PostList posts={posts} />
+          <PostList posts={products} />
         </div>
       </main>
     );

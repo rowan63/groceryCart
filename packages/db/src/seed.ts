@@ -1,7 +1,11 @@
+import bcrypt from "bcryptjs";
+
 export async function seed() {
   const { client } = await import("./client.js");
   const { products } = await import("./data.js");
 
+  await client.db.cartItem.deleteMany();
+  await client.db.cart.deleteMany();
   await client.db.orderItem.deleteMany();
   await client.db.order.deleteMany();
   await client.db.product.deleteMany();
@@ -10,7 +14,7 @@ export async function seed() {
   await client.db.user.create({
     data: {
       email: "test@test.com",
-      password: "password",
+      password: await bcrypt.hash("password", 10),
       name: "Test User",
       role: "user",
     },
@@ -19,7 +23,7 @@ export async function seed() {
   await client.db.user.create({
     data: {
       email: "admin@test.com",
-      password: "password",
+      password: await bcrypt.hash("password", 10),
       name: "Admin User",
       role: "admin",
     },
