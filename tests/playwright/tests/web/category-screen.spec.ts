@@ -7,44 +7,66 @@ test.describe("CATEGORY SCREEN", () => {
   });
 
   test(
-    "Existing Category",
-    {
-      tag: "@a1",
-    },
+    "Existing category shows correct products",
+    { tag: "@a1" },
     async ({ page }) => {
-      await page.goto("/category/react");
+      await page.goto("/category/bakery");
 
-      // CATEGORY SCREEN > Displays results based on category from url (e.g. /category/react)
-
-      const articles = await page.locator('[data-test-id^="blog-post-"]');
+      const articles = page.locator('[data-test-id^="product-"]');
       await expect(articles).toHaveCount(2);
 
-      await expect(page.getByTestId("blog-post-2")).toBeVisible();
-      await expect(
-        page.getByText("Better front ends with Fatboy Slim"),
-      ).toBeVisible();
-
-      await expect(page.getByTestId("blog-post-3")).toBeVisible();
-      await expect(
-        page.getByText("No front end framework is the best"),
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Sourdough Bread" }).or(page.locator('p.font-semibold', { hasText: "Sourdough Bread" }))).toBeVisible();
+      await expect(page.locator('p.font-semibold', { hasText: "Croissants" })).toBeVisible();
     },
   );
 
   test(
-    "Invalid Category",
-    {
-      tag: "@a1",
+    "Meat seafood category shows 4 products",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/category/meat-seafood");
+
+      const articles = page.locator('[data-test-id^="product-"]');
+      await expect(articles).toHaveCount(4);
+
+      await expect(page.locator('p.font-semibold', { hasText: "Chicken Breast" })).toBeVisible();
+      await expect(page.locator('p.font-semibold', { hasText: "Beef Mince" })).toBeVisible();
+      await expect(page.locator('p.font-semibold', { hasText: "Lamb Chops" })).toBeVisible();
+      await expect(page.locator('p.font-semibold', { hasText: "Atlantic Salmon" })).toBeVisible();
     },
+  );
+
+  test(
+    "Invalid category shows no products",
+    { tag: "@a1" },
     async ({ page }) => {
       await page.goto("/category/abc");
 
-      // CATEGORY SCREEN > Displays "0 Posts" when search does not find anything
-
-      const articles = await page.locator('[data-test-id^="blog-post-"]');
+      const articles = page.locator('[data-test-id^="product-"]');
       await expect(articles).toHaveCount(0);
+    },
+  );
 
-      await expect(page.getByText("0 Posts")).toBeVisible();
+  test(
+    "Subcategory filter updates URL",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/category/meat-seafood");
+
+      await page.locator('a[href="/category/meat-seafood?sub=chicken"]').click();
+      await expect(page).toHaveURL(/\/category\/meat-seafood\?sub=chicken/);
+    },
+  );
+
+  test(
+    "Subcategory filter shows only matching products",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/category/meat-seafood?sub=chicken");
+
+      const articles = page.locator('[data-test-id^="product-"]');
+      await expect(articles).toHaveCount(1);
+      await expect(page.locator('p.font-semibold', { hasText: "Chicken Breast" })).toBeVisible();
     },
   );
 });
