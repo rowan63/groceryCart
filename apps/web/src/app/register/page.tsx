@@ -43,16 +43,16 @@ export default function RegisterPage() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Create account</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-            <input type="text" value={name} onChange={e => setName(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+            <input id="name" type="text" value={name} onChange={e => setName(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-            <input type="text" value={email} onChange={e => setEmail(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+            <input id="email" type="text" value={email} onChange={e => setEmail(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+            <input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} className="border border-gray-300 rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button type="submit" className="bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium hover:bg-indigo-700">Create Account</button>
