@@ -31,12 +31,14 @@
     }
   },
   "dependencies": {
-    "@repo/env": "workspace:*"
+    "@repo/env": "workspace:*",
+    "bcryptjs": "^3.0.3"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^22.13.1",
     "vitest": "^3.0.4"
   }

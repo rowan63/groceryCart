@@ -1,5 +1,5 @@
 import type { Product } from "@prisma/client";
-import ProductList from "./Blog/List";
+import ProductList from "./Products/List";
 
 export function Main({
   products,
