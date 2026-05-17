@@ -2,74 +2,73 @@ import { seed } from "@repo/db/seed";
 import { expect, test } from "./fixtures";
 
 test.describe("DETAIL SCREEN", () => {
-  test.beforeEach(async () => {
+  test.beforeAll(async () => {
     await seed();
   });
 
   test(
-    "Detail view",
-    {
-      tag: "@a1",
-    },
+    "Add to cart from detail page when logged out redirects to login",
+    { tag: "@a1" },
     async ({ page }) => {
-      await page.goto("/post/boost-your-conversion-rate");
+      await page.context().clearCookies();
+      await page.goto("/");
+      await page.locator('[data-test-id^="product-"]').first().click();
 
-      // DETAIL SCREEN > Detail page shows the same items as list item, but the short description is replaced by formatted long description
-
-      const item = await page.getByTestId("blog-post-1");
-      await expect(item).toBeVisible();
-
-      await expect(item.getByText("Boost your conversion rate")).toBeVisible();
-      await expect(
-        item.getByText("Boost your conversion rate"),
-      ).toHaveAttribute("href", "/post/boost-your-conversion-rate");
-
-      await expect(item.getByText("Node")).toBeVisible();
-      await expect(item.getByText("#Back-End")).toBeVisible();
-      await expect(item.getByText("#Databases")).toBeVisible();
-      await expect(item.getByText("18 Apr 2022")).toBeVisible();
-      await expect(item.getByText("320 views")).toBeVisible();
-      await expect(item.getByText("3 likes")).toBeVisible();
-
-      // DETAIL SCREEN > Detail text is stored as Markdown, which needs to be converted to HTML
-      await expect(
-        await page.getByTestId("content-markdown").innerHTML(),
-      ).toContain("<strong>sint voluptas</strong>");
+      await page.getByRole("button", { name: "Add to cart" }).click();
+      await expect(page).toHaveURL(/\/login/);
     },
   );
 
   test(
-    "Views increase on each view",
-    {
-      tag: "@a3",
-    },
+    "Detail page shows product info",
+    { tag: "@a1" },
     async ({ page }) => {
-      // BACKEND / CLIENT > Each visit of the page increases the post "views" count by one
+      await page.goto("/");
+      await page.locator('[data-test-id^="product-"]').first().click();
+      await expect(page).toHaveURL(/\/product\/\d+/);
 
-      await page.goto("/post/boost-your-conversion-rate");
-      await expect(page.getByText("321 views")).toBeVisible();
-      await page.goto("/post/boost-your-conversion-rate");
-      await expect(page.getByText("322 views")).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Chicken Breast" })).toBeVisible();
+      await expect(page.getByText("Free range chicken breast")).toBeVisible();
+      await expect(page.getByText("$12.99")).toBeVisible();
+      await expect(page.getByText(/in stock/)).toBeVisible();
     },
   );
 
   test(
-    "Like posts",
-    {
-      tag: "@a3",
-    },
+    "Detail page shows category",
+    { tag: "@a1" },
     async ({ page }) => {
-      // BACKEND / CLIENT > User can "like" the post on the detail screen, NOT on the list
+      await page.goto("/");
+      await page.locator('[data-test-id^="product-"]').first().click();
 
-      await page.goto("/post/boost-your-conversion-rate");
-      await expect(page.getByText("3 likes")).toBeVisible();
-      await page.getByTestId("like-button").click();
-      await expect(page.getByText("4 likes")).toBeVisible();
+      await expect(page.getByText("Poultry, Meat and Seafood")).toBeVisible();
+    },
+  );
 
-      await page.goto("/post/boost-your-conversion-rate");
-      await expect(page.getByText("4 likes")).toBeVisible();
-      await page.getByTestId("like-button").click();
-      await expect(page.getByText("3 likes")).toBeVisible();
+  test(
+    "Detail page has add to cart button",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/");
+      await page.locator('[data-test-id^="product-"]').first().click();
+
+      await expect(page.getByRole("button", { name: "Add to cart" })).toBeVisible();
+    },
+  );
+
+  test(
+    "Add to cart from detail page when logged in adds to cart",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/login");
+      await page.getByLabel("Email").fill("test@test.com");
+      await page.getByLabel("Password").fill("password");
+      await page.getByRole("button", { name: "Sign In" }).click();
+      await expect(page).toHaveURL("/");
+
+      await page.locator('[data-test-id^="product-"]').first().click();
+      await page.getByRole("button", { name: "Add to cart" }).click();
+      await expect(page.getByRole("heading", { name: /Cart/ })).toBeVisible();
     },
   );
 });
