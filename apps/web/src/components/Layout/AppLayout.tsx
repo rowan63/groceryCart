@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { Content } from "../Content";
 import { LeftMenu } from "../Menu/LeftMenu";
+import { RightMenu } from "../Menu/RightMenu";
 import { TopMenu } from "./TopMenu";
 
 export async function AppLayout({
@@ -9,11 +10,18 @@ export async function AppLayout({
 }: PropsWithChildren<{ query?: string }>) {
   return (
     <div className="flex min-h-screen bg-white dark:bg-gray-900">
-      <LeftMenu />
-      <Content>
-        <TopMenu query={query} />
-        {children}
-      </Content>
+      <div className="sticky top-0 h-screen overflow-y-auto flex-shrink-0">
+        <LeftMenu />
+      </div>
+      <div className="flex-1 overflow-y-auto">
+        <Content>
+          <TopMenu query={query} />
+          {children}
+        </Content>
+      </div>
+      <div className="sticky top-0 h-screen overflow-y-auto flex-shrink-0">
+        <RightMenu />
+      </div>
     </div>
   );
 }

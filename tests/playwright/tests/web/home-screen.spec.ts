@@ -6,165 +6,108 @@ test.beforeAll(async () => {
 });
 
 test.describe("HOME SCREEN", () => {
-  async function checkItem(
-    page: Page,
-    name: string,
-    link: string,
-    count?: number,
-  ) {
-    const linkItem = page.getByTitle(name);
-    await expect(linkItem).toBeVisible();
-    await expect(linkItem).toHaveAttribute("href", link);
+  test("Add to cart when logged out redirects to login", { tag: "@a1" }, async ({ page }) => {
+    await page.context().clearCookies();
+    await page.goto("/");
+    await page.locator('[data-test-id^="product-"]').first().getByText("Add to cart").click();
+    await expect(page).toHaveURL(/\/login/);
+  });
+  
+  test("Show 15 products", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    const articles = page.locator('[data-test-id^="product-"]');
+    await expect(articles).toHaveCount(15);
+  });
 
-    if (count) {
-      const item = linkItem.getByTestId("post-count");
-      await expect(item).toBeVisible();
-      await expect(item).toContainText(count.toString());
+  test("Products have add to cart button", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    const first = page.locator('[data-test-id^="product-"]').first();
+    await expect(first.getByText("Add to cart")).toBeVisible();
+  });
+
+  test("Category links show in left menu", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByText("Poultry, Meat & Seafood")).toBeVisible();
+    await expect(page.getByText("Fruit & Veg")).toBeVisible();
+    await expect(page.getByText("Dairy, Eggs & Fridge")).toBeVisible();
+    await expect(page.getByText("Bakery")).toBeVisible();
+    await expect(page.getByText("Snacks & Confectionery")).toBeVisible();
+  });
+
+  test("Subcategory links show under category", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("link", { name: "Chicken" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Beef" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Lamb" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Seafood" })).toBeVisible();
+  });
+
+  test("Clicking category navigates to category page", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("link", { name: "Bakery" }).click();
+    await expect(page).toHaveURL(/\/category\/bakery/);
+  });
+
+  test("Search navigates to search results", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    await page.getByPlaceholder("Search").fill("Chicken");
+    await expect(page).toHaveURL(/\/search\?q=Chicken/);
+  });
+
+  test("Dark mode toggle switches theme", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    const html = await page.getAttribute("html", "data-theme");
+    if (html === "dark") {
+      await page.getByText("Light Mode").click();
+      await expect(await page.getAttribute("html", "data-theme")).toBe("light");
+    } else {
+      await page.getByText("Dark Mode").click();
+      await expect(await page.getAttribute("html", "data-theme")).toBe("dark");
     }
-  }
+  });
 
-  test(
-    "Show Active Posts",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/");
+  test("Right menu shows sign in when logged out", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByText("Sign in to add items to your cart.")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Sign In" })).toBeVisible();
+  });
 
-      await expect(await page.locator("article").count()).toBe(3);
-    },
-  );
+  test("Register link shows when logged out", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("link", { name: /register/i })).toBeVisible();
+  });
 
-  test(
-    "Category Links",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/");
+  test("Clicking product navigates to detail page", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    await page.locator('[data-test-id^="product-"]').first().click();
+    await expect(page).toHaveURL(/\/product\/\d+/);
+  });
 
-      // HOME SCREEN > User must see the list of blog post categories, where each category points to UI showing only posts of that category
+  test("Right menu shows cart when logged in", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/login");
+    await page.getByLabel("Email").fill("test@test.com");
+    await page.getByLabel("Password").fill("password");
+    await page.getByRole("button", { name: "Sign In" }).click();
+    await expect(page).toHaveURL("/");
+    await expect(page.getByRole("heading", { name: /Cart/ })).toBeVisible();
+  });
 
-      await checkItem(page, "Category / React", "/category/react");
-      await checkItem(page, "Category / Node", "/category/node");
-      //await checkItem(page, "Category / Mongo", "/category/mongo");
-      //await checkItem(page, "Category / DevOps", "/category/devops");
-    },
-  );
+  test("Logout button shows when logged in", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/login");
+    await page.getByLabel("Email").fill("test@test.com");
+    await page.getByLabel("Password").fill("password");
+    await page.getByRole("button", { name: "Sign In" }).click();
+    await expect(page).toHaveURL("/");
+    await expect(page.getByText("Logout")).toBeVisible();
+  });
 
-  test(
-    "History Links",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/");
-
-      // HOME SCREEN > User must see the history of blog posts, showing month and year, where each moth, year tuple points to UI showing only posts of that category
-
-      await checkItem(page, "History / December, 2024", "/history/2024/12", 1);
-      await checkItem(page, "History / April, 2022", "/history/2022/4", 1);
-      await checkItem(page, "History / March, 2020", "/history/2020/3", 1);
-
-      // HOME SCREEN > Tags and history items shown are only considered from active posts
-
-      await expect(page.getByText("December, 2012")).not.toBeVisible();
-    },
-  );
-
-  test(
-    "Tag Links",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/");
-
-      // HOME SCREEN > User must see the list of blog post tags, where each tag points to UI showing only posts of that category
-
-      await checkItem(page, "Tag / Back-End", "/tags/back-end", 1);
-      await checkItem(page, "Tag / Front-End", "/tags/front-end", 2);
-      await checkItem(page, "Tag / Optimisation", "/tags/optimisation", 1);
-      await checkItem(page, "Tag / Dev Tools", "/tags/dev-tools", 1);
-
-      // HOME SCREEN > Tags and history items shown are only considered from active posts
-
-      await expect(page.getByText("Mainframes")).not.toBeVisible();
-    },
-  );
-
-  test(
-    "Post Item",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/");
-
-      const item = await page.getByTestId("blog-post-1");
-      await expect(item).toBeVisible();
-
-      // HOME SCREEN > The list shows the following items:
-      // - short description
-      // - date
-      // - image
-      // - tags
-      // - likes
-      // - views
-
-      await expect(item.getByText("Boost your conversion rate")).toBeVisible();
-      await expect(
-        item.getByText("Boost your conversion rate"),
-      ).toHaveAttribute("href", "/post/boost-your-conversion-rate");
-
-      await expect(item.getByText("Node")).toBeVisible();
-      await expect(item.getByText("#Back-End")).toBeVisible();
-      await expect(item.getByText("#Databases")).toBeVisible();
-      await expect(item.getByText("18 Apr 2022")).toBeVisible();
-      await expect(item.getByText("321 views")).toBeVisible();
-      await expect(item.getByText("3 likes")).toBeVisible();
-    },
-  );
-
-  test(
-    "Dark Mode Switch",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/");
-
-      // HOME SCREEN > User must be able to switch between dark and light theme with a button
-
-      const html = await page.getAttribute("html", "data-theme");
-      if (html === "dark") {
-        await page.getByText("Light Mode").click();
-        // await page.waitForTimeout(1000);
-        await expect(await page.getAttribute("html", "data-theme")).toBe(
-          "light",
-        );
-      } else {
-        await page.getByText("Dark Mode").click();
-        // await page.waitForTimeout(1000);
-        await expect(await page.getAttribute("html", "data-theme")).toBe(
-          "dark",
-        );
-      }
-    },
-  );
-
-  test(
-    "Search Box",
-    {
-      tag: "@a1",
-    },
-    async ({ page }) => {
-      await page.goto("/");
-
-      // HOME SCREEN > There is a search functionality that filters blogs based on string found in title or description
-
-      await page.getByPlaceholder("Search").fill("Fatboy");
-      await expect(page).toHaveURL("/search?q=Fatboy");
-    },
-  );
+  test("Add to cart when logged in adds to cart", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/login");
+    await page.getByLabel("Email").fill("test@test.com");
+    await page.getByLabel("Password").fill("password");
+    await page.getByRole("button", { name: "Sign In" }).click();
+    await expect(page).toHaveURL("/");
+    await page.locator('[data-test-id^="product-"]').first().getByText("Add to cart").click();
+    await expect(page.getByText(/Cart \(\d+\)/)).toBeVisible();
+  });
 });
