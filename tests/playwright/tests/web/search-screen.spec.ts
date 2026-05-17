@@ -1,67 +1,55 @@
+import { seed } from "@repo/db/seed";
 import { expect, test } from "./fixtures";
 
 test.describe("SEARCH SCREEN", () => {
+  test.beforeAll(async () => {
+    await seed();
+  });
+
   test(
-    "Existing search result",
-    {
-      tag: "@a1",
-    },
+    "Search finds single product",
+    { tag: "@a1" },
     async ({ page }) => {
-      await page.goto("/search?q=Fat");
+      await page.goto("/search?q=Croissants");
 
-      // SEARCH SCREEN > Displays results based on search string stored in the query string (e.g. /search?q=Fat)
-
-      // console.log(await page.innerHTML("body"));
-
-      const articles = await page.locator('[data-test-id^="blog-post-"]');
+      const articles = page.locator('[data-test-id^="product-"]');
       await expect(articles).toHaveCount(1);
-
-      await expect(page.getByTestId("blog-post-2")).toBeVisible();
-      await expect(
-        page.getByText("Better front ends with Fatboy Slim"),
-      ).toBeVisible();
+      await expect(page.locator('p.font-semibold', { hasText: "Croissants" })).toBeVisible();
     },
   );
 
   test(
-    "Search finds multiple posts",
-    {
-      tag: "@a1",
-    },
+    "Search finds multiple products",
+    { tag: "@a1" },
     async ({ page }) => {
-      await page.goto("/search?q=front");
+      await page.goto("/search?q=fresh");
 
-      // SEARCH SCREEN > Displays results based on search string stored in the query string (e.g. /search?q=Fat)
-
-      const articles = await page.locator('[data-test-id^="blog-post-"]');
-      await expect(articles).toHaveCount(2);
-
-      await expect(page.getByTestId("blog-post-2")).toBeVisible();
-      await expect(
-        page.getByText("Better front ends with Fatboy Slim"),
-      ).toBeVisible();
-
-      await expect(page.getByTestId("blog-post-3")).toBeVisible();
-      await expect(
-        page.getByText("No front end framework is the best"),
-      ).toBeVisible();
+      const articles = page.locator('[data-test-id^="product-"]');
+      await expect(articles).toHaveCount(4);
     },
   );
 
   test(
-    "Invalid Search",
-    {
-      tag: "@a1",
-    },
+    "Invalid search shows no products",
+    { tag: "@a1" },
     async ({ page }) => {
-      await page.goto("/search?q=abc");
+      await page.goto("/search?q=xyz123");
 
-      // SEARCH SCREEN > Displays "0 Posts" when search does not find anything
-
-      const articles = await page.locator('[data-test-id^="blog-post-"]');
+      const articles = page.locator('[data-test-id^="product-"]');
       await expect(articles).toHaveCount(0);
+      await expect(page.getByText("0 products.")).toBeVisible();
+    },
+  );
 
-      await expect(page.getByText("0 Posts")).toBeVisible();
+  test(
+    "Search is case insensitive",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/search?q=chicken");
+
+      const articles = page.locator('[data-test-id^="product-"]');
+      await expect(articles).toHaveCount(1);
+      await expect(page.locator('p.font-semibold', { hasText: "Chicken Breast" })).toBeVisible();
     },
   );
 });
