@@ -6,12 +6,13 @@ import { ProductList } from "@/components/Products/List";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ q: string }>;
+  searchParams: Promise<{ q: string; category?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, category } = await searchParams;
   const products = await client.db.product.findMany({
     where: {
       active: true,
+      ...(category ? { category } : {}),
       OR: [
         { name: { contains: q } },
         { description: { contains: q } },
@@ -20,7 +21,7 @@ export default async function Page({
   });
 
   return (
-    <AppLayout query={q}>
+    <AppLayout query={q} category={category}>
       <ProductList products={products} />
     </AppLayout>
   );
