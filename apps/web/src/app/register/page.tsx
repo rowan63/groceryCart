@@ -24,11 +24,13 @@ export default function RegisterPage() {
       setError("Please enter a password");
       return;
     }
+
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
     });
+    
     const data = await res.json();
     if (!res.ok) {
       setError(data.error);

@@ -27,7 +27,6 @@ export function LeftMenu() {
       <nav>
         <ul className="flex flex-col gap-6">
           <Section title="Shop by Category">
-            <p className="text-xs font-semibold uppercase text-gray-400 mb-2">Categories</p>
             <CategoryList />
           </Section>
           <Section title="Previous Purchases">
