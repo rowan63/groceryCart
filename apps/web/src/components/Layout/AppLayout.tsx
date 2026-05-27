@@ -7,7 +7,8 @@ import { TopMenu } from "./TopMenu";
 export async function AppLayout({
   children,
   query,
-}: PropsWithChildren<{ query?: string }>) {
+  category,
+}: PropsWithChildren<{ query?: string; category?: string }>) {
   return (
     <div className="flex min-h-screen bg-white dark:bg-gray-900">
       <div className="sticky top-0 h-screen overflow-y-auto flex-shrink-0">
@@ -15,7 +16,7 @@ export async function AppLayout({
       </div>
       <div className="flex-1 overflow-y-auto">
         <Content>
-          <TopMenu query={query} />
+          <TopMenu query={query} category={category} />
           {children}
         </Content>
       </div>
