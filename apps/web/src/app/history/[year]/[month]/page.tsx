@@ -1,16 +1,12 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
-import { products } from "@repo/db/data";
+import { OrderList } from "@/components/Products/OrderList";
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ year: string; month: string }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ year: string; month: string }> }) {
   const { year, month } = await params;
 
   return (
     <AppLayout>
-      <div>History for {month}/{year}</div>
+      <OrderList year={year} month={month} />
     </AppLayout>
   );
 }

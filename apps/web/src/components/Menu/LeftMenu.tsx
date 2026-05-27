@@ -30,7 +30,7 @@ export function LeftMenu() {
             <CategoryList />
           </Section>
           <Section title="Previous Purchases">
-            <HistoryList selectedYear="" selectedMonth="" orders={[]} />
+            <HistoryList selectedYear="" selectedMonth="" />
           </Section>
         </ul>
       </nav>
