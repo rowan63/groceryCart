@@ -4,15 +4,21 @@ import { history } from "@/functions/history";
 import { useEffect, useState } from "react";
 import { SummaryItem } from "./SummaryItem";
 
-const months = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
+const months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-export function HistoryList({ selectedYear, selectedMonth, orders }: { selectedYear?: string; selectedMonth?: string; orders: { createdAt: Date }[] }) {
+export function HistoryList({ selectedYear, selectedMonth }: { selectedYear?: string; selectedMonth?: string }) {
   const [historyItems, setHistoryItems] = useState<{ month: number; year: number; count: number }[]>([]);
 
-   useEffect(() => {
-    history(orders).then(setHistoryItems);
-  }, [orders]);
-
+  useEffect(() => {
+    fetch("/api/orders")
+      .then((r) => r.json())
+      .then((orders) => {
+        if (Array.isArray(orders)) {
+          const parsed = orders.map((o: { createdAt: string }) => ({ createdAt: new Date(o.createdAt) }));
+          history(parsed).then(setHistoryItems);
+        }
+      });
+  }, []);
 
   return (
     <>
