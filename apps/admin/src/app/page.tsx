@@ -1,7 +1,7 @@
 import { client } from "@repo/db/client";
 import { isLoggedIn } from "../utils/auth";
 import { login, logout } from "./actions";
-import { PostList } from "./components/PostList";
+import { ProductList } from "./components/ProductList";
 
 export default async function Home() {
   const loggedIn = await isLoggedIn();
@@ -28,11 +28,14 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold text-gray-900">Admin of Grocery Store</h1>
-            <form action={logout}>
-              <button type="submit" className="text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-md px-3 py-1.5">Logout</button>
-            </form>
+            <div className="flex items-center gap-3">
+              <a href="/users" className="text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-md px-3 py-1.5">Users</a>
+              <form action={logout}>
+                <button type="submit" className="text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-md px-3 py-1.5">Logout</button>
+              </form>
+            </div>
           </div>
-          <PostList posts={products} />
+          <ProductList products={products} />
         </div>
       </main>
     );
