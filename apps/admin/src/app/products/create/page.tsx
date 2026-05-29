@@ -1,11 +1,8 @@
-import { client } from "@repo/db/client";
 import { isLoggedIn } from "../../../utils/auth";
 import { login } from "../../actions";
-import { PostForm } from "../../components/PostForm";
-import { notFound } from "next/navigation";
+import { ProductForm } from "../../components/ProductForm";
 
-export default async function UpdatePost({ params }: { params: Promise<{ urlId: string }> }) {
-    const { urlId } = await params;
+export default async function CreateProduct() {
     const loggedIn = await isLoggedIn();
 
     if (!loggedIn) {
@@ -21,8 +18,5 @@ export default async function UpdatePost({ params }: { params: Promise<{ urlId: 
         );
     }
 
-    const post = await client.db.post.findUnique({ where: { urlId } });
-    if (!post) notFound();
-
-    return <PostForm post={post} />;
+    return <ProductForm />;
 }

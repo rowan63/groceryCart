@@ -27,65 +27,49 @@ export async function logout() {
 }
 
 
-const postSchema = z.object({
-    title: z.string().trim().min(1, "Title is required"),
-    description: z.string().trim().min(1, "Description is required").max(200, "Description is too long. Maximum is 200 characters"), 
-    content: z.string().trim().min(1, "Content is required"),
-    imageUrl: z.string().min(1, "Image URL is required").url("This is not a valid URL"),
-    tags: z.string().trim().min(1, "At least one tag is required"),
+const productSchema = z.object({
+    name: z.string().trim().min(1, "Name is required"),
+    description: z.string().trim(),
+    price: z.coerce.number().positive("Price must be positive"),
     category: z.string().trim().min(1, "Category is required"),
-})
+    subcategory: z.string().trim(),
+    stock: z.coerce.number().int().min(0, "Stock cannot be negative"),
+});
 
-export async function updatePost(urlId: string, formData: FormData) {
+export async function createProduct(formData: FormData) {
     const data = {
-        title: formData.get('title') as string,
+        name: formData.get('name') as string,
         description: formData.get('description') as string,
-        content: formData.get('content') as string,
-        imageUrl: formData.get('imageUrl') as string,
-        tags: formData.get('tags') as string,
+        price: formData.get('price') as string,
         category: formData.get('category') as string,
-    }
+        subcategory: formData.get('subcategory') as string,
+        stock: formData.get('stock') as string,
+    };
 
-    const result = postSchema.safeParse(data);
-    if (!result.success) {
-        return { error: result.error.format() };
-    }
+    const result = productSchema.safeParse(data);
+    if (!result.success) return { error: result.error.format() };
 
-    await client.db.post.update({
-        where: { urlId },
-        data: result.data,
-    });
-
+    await client.db.product.create({ data: result.data });
     return { success: true };
 }
 
-export async function createPost(formData: FormData) {
+export async function updateProduct(id: number, formData: FormData) {
     const data = {
-        title: formData.get('title') as string,
+        name: formData.get('name') as string,
         description: formData.get('description') as string,
-        content: formData.get('content') as string,
-        imageUrl: formData.get('imageUrl') as string,
-        tags: formData.get('tags') as string,
+        price: formData.get('price') as string,
         category: formData.get('category') as string,
-    }
+        subcategory: formData.get('subcategory') as string,
+        stock: formData.get('stock') as string,
+    };
 
-    const result = postSchema.safeParse(data);
-    if (!result.success) {
-        return { error: result.error.format() };
-    }
+    const result = productSchema.safeParse(data);
+    if (!result.success) return { error: result.error.format() };
 
-    const urlId = result.data.title.toLowerCase().replace(/\s+/g, '-');
-
-    await client.db.post.create({
-        data: { ...result.data, urlId },
-    });
-
+    await client.db.product.update({ where: { id }, data: result.data });
     return { success: true };
 }
 
 export async function toggleActive(id: number, active: boolean) {
-    await client.db.post.update({
-        where: { id },
-        data: { active: !active },
-    });
+    await client.db.product.update({ where: { id }, data: { active: !active } });
 }
