@@ -18,10 +18,11 @@ export function SummaryItem({
       <a
         href={link}
         title={title ?? name}
-        className={`flex justify-between items-center py-1 px-2 rounded text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${isSelected ? "selected bg-indigo-100 dark:bg-indigo-900 font-semibold text-indigo-700 dark:text-indigo-300" : ""}`}      >
+        className={`flex justify-between items-center py-1 px-2 rounded-md text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors ${isSelected ? "bg-[#E1F5EE] text-[#0F6E56] font-semibold dark:bg-[#085041] dark:text-[#5DCAA5]" : ""}`}
+      >
         <span>{name}</span>
         {" "}
-        <span data-test-id="count">{count}</span>
+        <span data-test-id="count" className="text-gray-300 dark:text-gray-600 text-[10px]">{count}</span>
       </a>
     </li>
   );
