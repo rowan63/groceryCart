@@ -51,64 +51,64 @@ export default function CheckoutPage() {
     }
 
     if (cart.length === 0) return (
-        <div className="p-8 text-center">
-            <p className="text-gray-500 mb-4">Your cart is empty.</p>
-            <a href="/" className="text-indigo-600 hover:underline">Continue shopping</a>
+        <div className="py-12 text-center">
+            <p className="text-sm text-gray-400 mb-4">Your cart is empty.</p>
+            <a href="/" className="text-sm text-[#1D9E75] hover:underline">Continue shopping</a>
         </div>
     );
 
     return (
-        <div className="max-w-2xl mx-auto p-6 space-y-8">
-            <h1 className="text-2xl font-bold">Checkout</h1>
+        <div className="max-w-2xl py-6 space-y-6 mx-auto">
+            <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Checkout</h1>
 
             <section>
-                <h2 className="text-lg font-semibold mb-3">Order Summary</h2>
-                <div className="border rounded-lg divide-y dark:border-gray-700">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Order summary</h2>
+                <div className="border border-gray-100 dark:border-gray-700 rounded-xl divide-y divide-gray-50 dark:divide-gray-700 bg-white dark:bg-gray-800">
                     {cart.map((item) => (
-                        <div key={item.id} className="flex justify-between px-4 py-3 text-sm">
-                            <span>{item.product.name} <span className="text-gray-500">× {item.quantity}</span></span>
-                            <span className="font-medium">${(item.product.price * item.quantity).toFixed(2)}</span>
+                        <div key={item.id} className="flex justify-between px-4 py-3 text-xs text-gray-600 dark:text-gray-300">
+                            <span>{item.product.name} <span className="text-gray-400">× {item.quantity}</span></span>
+                            <span className="font-semibold">${(item.product.price * item.quantity).toFixed(2)}</span>
                         </div>
                     ))}
-                    <div className="flex justify-between px-4 py-3 font-bold">
+                    <div className="flex justify-between px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
                         <span>Total</span>
-                        <span>${total.toFixed(2)}</span>
+                        <span className="text-[#1D9E75]">${total.toFixed(2)}</span>
                     </div>
                 </div>
             </section>
 
             <section>
-                <h2 className="text-lg font-semibold mb-3">Payment Details</h2>
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Payment details</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1">Name on card</label>
+                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Name on card</label>
                         <input name="name" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Jane Smith"
-                            className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 ${fieldErrors.name ? "border-red-500" : "border-gray-300"}`} />
-                        {fieldErrors.name && <p className="text-red-500 text-xs mt-1">{fieldErrors.name}</p>}
+                            className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75] dark:bg-gray-800 dark:border-gray-600 dark:text-white ${fieldErrors.name ? "border-red-400" : "border-gray-200"}`} />
+                        {fieldErrors.name && <p className="text-red-400 text-xs mt-1">{fieldErrors.name}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">Card number</label>
+                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Card number</label>
                         <input name="cardNumber" value={form.cardNumber} onChange={(e) => setForm((f) => ({ ...f, cardNumber: e.target.value }))} placeholder="1234 5678 9012 3456"
-                            className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 ${fieldErrors.cardNumber ? "border-red-500" : "border-gray-300"}`} />
-                        {fieldErrors.cardNumber && <p className="text-red-500 text-xs mt-1">{fieldErrors.cardNumber}</p>}
+                            className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75] dark:bg-gray-800 dark:border-gray-600 dark:text-white ${fieldErrors.cardNumber ? "border-red-400" : "border-gray-200"}`} />
+                        {fieldErrors.cardNumber && <p className="text-red-400 text-xs mt-1">{fieldErrors.cardNumber}</p>}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium mb-1">Expiry</label>
+                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Expiry</label>
                             <input name="expiry" value={form.expiry} onChange={(e) => setForm((f) => ({ ...f, expiry: e.target.value }))} placeholder="MM/YY"
-                                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 ${fieldErrors.expiry ? "border-red-500" : "border-gray-300"}`} />
-                            {fieldErrors.expiry && <p className="text-red-500 text-xs mt-1">{fieldErrors.expiry}</p>}
+                                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75] dark:bg-gray-800 dark:border-gray-600 dark:text-white ${fieldErrors.expiry ? "border-red-400" : "border-gray-200"}`} />
+                            {fieldErrors.expiry && <p className="text-red-400 text-xs mt-1">{fieldErrors.expiry}</p>}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-1">CVV</label>
+                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">CVV</label>
                             <input name="cvv" value={form.cvv} onChange={(e) => setForm((f) => ({ ...f, cvv: e.target.value }))} placeholder="123"
-                                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 ${fieldErrors.cvv ? "border-red-500" : "border-gray-300"}`} />
-                            {fieldErrors.cvv && <p className="text-red-500 text-xs mt-1">{fieldErrors.cvv}</p>}
+                                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75] dark:bg-gray-800 dark:border-gray-600 dark:text-white ${fieldErrors.cvv ? "border-red-400" : "border-gray-200"}`} />
+                            {fieldErrors.cvv && <p className="text-red-400 text-xs mt-1">{fieldErrors.cvv}</p>}
                         </div>
                     </div>
-                    {error && <p className="text-red-500 text-sm">{error}</p>}
+                    {error && <p className="text-red-400 text-xs">{error}</p>}
                     <button type="submit" disabled={submitting}
-                        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-colors">
+                        className="w-full bg-[#1D9E75] hover:bg-[#0F6E56] disabled:opacity-50 text-white text-sm font-semibold py-3 rounded-lg transition-colors">
                         {submitting ? "Placing order..." : `Pay $${total.toFixed(2)}`}
                     </button>
                 </form>

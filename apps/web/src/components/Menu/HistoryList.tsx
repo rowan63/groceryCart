@@ -8,8 +8,14 @@ const months = ["", "January", "February", "March", "April", "May", "June", "Jul
 
 export function HistoryList({ selectedYear, selectedMonth }: { selectedYear?: string; selectedMonth?: string }) {
   const [historyItems, setHistoryItems] = useState<{ month: number; year: number; count: number }[]>([]);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
+    fetch("/api/auth/user")
+      .then(r => r.json())
+      .then(data => setLoggedIn(!!data.userId))
+      .catch(() => setLoggedIn(false));
+
     fetch("/api/orders")
       .then((r) => r.json())
       .then((orders) => {
@@ -19,6 +25,10 @@ export function HistoryList({ selectedYear, selectedMonth }: { selectedYear?: st
         }
       });
   }, []);
+
+  if (loggedIn === false) {
+    return <p className="text-xs text-gray-400 dark:text-gray-500 px-2">Sign in to view.</p>;
+  }
 
   return (
     <>

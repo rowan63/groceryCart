@@ -24,13 +24,13 @@ export default async function Page({
 
   return (
     <AppLayout>
-      <div className="py-6">
+      <div className="py-4">
         <div className="flex gap-2 mb-6 flex-wrap">
-          <a href={`/category/${name}`} className={`px-4 py-2 rounded-full text-sm font-medium ${!sub ? "bg-indigo-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"}`}>
+          <a href={`/category/${name}`} className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${!sub ? "bg-[#1D9E75] text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"}`}>
             All
           </a>
           {subcategories.map(s => (
-            <a key={s} href={`/category/${name}?sub=${encodeURIComponent(s.toLowerCase().replace(/ /g, "-"))}`} className={`px-4 py-2 rounded-full text-sm font-medium ${sub === s.toLowerCase().replace(/ /g, "-") ? "bg-indigo-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200"}`}>
+            <a key={s} href={`/category/${name}?sub=${encodeURIComponent(s.toLowerCase().replace(/ /g, "-"))}`} className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${sub === s.toLowerCase().replace(/ /g, "-") ? "bg-[#1D9E75] text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"}`}>
               {s}
             </a>
           ))}

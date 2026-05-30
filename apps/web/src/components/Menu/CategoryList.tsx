@@ -22,23 +22,35 @@ export function CategoryList() {
   }, []);
 
   return (
-    <ul className="flex flex-col gap-1">
+    <ul className="flex flex-col gap-0.5">
       {categories.map((c) => (
         <div key={c.slug}>
           <div className="flex items-center justify-between pr-1">
-            <a href={`/category/${c.slug}`} className="flex-1 py-1 px-2 rounded text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <a
+              href={`/category/${c.slug}`}
+              className="flex-1 py-1.5 px-2 rounded-md text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
               {c.name}
             </a>
             {(subcategories[c.slug] ?? []).length > 0 && (
-              <button onClick={() => setOpenSlug(openSlug === c.slug ? null : c.slug)} className="px-2 text-gray-400 hover:text-gray-600 text-xs">
+              <button
+                onClick={() => setOpenSlug(openSlug === c.slug ? null : c.slug)}
+                className="px-1.5 text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 text-[8px] transition-colors"
+              >
                 {openSlug === c.slug ? "▲" : "▼"}
               </button>
             )}
           </div>
           {openSlug === c.slug && (
-            <ul className="ml-3 border-l border-gray-200 dark:border-gray-600 pl-3">
+            <ul className="ml-3 border-l border-gray-100 dark:border-gray-600 pl-3 mt-0.5">
               {(subcategories[c.slug] ?? []).map((sub) => (
-                <SummaryItem key={sub} name={sub} link={`/category/${c.slug}?sub=${encodeURIComponent(sub.toLowerCase().replace(/ /g, "-"))}`} isSelected={false} title={sub} />
+                <SummaryItem
+                  key={sub}
+                  name={sub}
+                  link={`/category/${c.slug}?sub=${encodeURIComponent(sub.toLowerCase().replace(/ /g, "-"))}`}
+                  isSelected={false}
+                  title={sub}
+                />
               ))}
             </ul>
           )}

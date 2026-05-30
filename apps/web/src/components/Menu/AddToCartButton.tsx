@@ -26,7 +26,7 @@ export function AddToCartButton({ productId }: { productId: number }) {
   return (
     <button
       onClick={addToCart}
-      className="mt-auto bg-indigo-600 text-white rounded-md px-3 py-1.5 text-sm hover:bg-indigo-700"
+      className="mt-auto bg-[#1D9E75] text-white rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-[#0F6E56] transition-colors w-full"
     >
       Add to cart
     </button>

@@ -6,10 +6,14 @@ import { client } from "@repo/db/client";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
 import { env } from "@repo/env/admin";
+import { compare } from "bcryptjs";
 
 export async function login(formData: FormData) {
+    const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-    if (password === "123") {
+
+    const user = await client.db.user.findUnique({ where: { email } });
+    if (user && user.role === "admin" && await compare(password, user.password)) {
         const token = jwt.sign({ authenticated: true }, env.JWT_SECRET || "secret");
         const cookieStore = await cookies();
         cookieStore.set("auth_token", token, {

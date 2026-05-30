@@ -29,11 +29,17 @@ export function AuthButtons() {
   if (loggedIn === null) return null;
 
   return loggedIn ? (
-    <button onClick={handleLogout} className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 border border-gray-300 rounded-md px-3 py-1.5">Logout</button>
+    <button onClick={handleLogout} className="text-xs text-white border border-white/40 rounded-lg px-4 py-1.5 hover:bg-white/10 transition-colors">
+      Log out
+    </button>
   ) : (
     <>
-      <a href="/login" className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900">Login</a>
-      <a href="/register" className="text-sm bg-indigo-600 text-white rounded-md px-3 py-1.5 hover:bg-indigo-700">Register</a>
+      <a href="/login" className="text-xs text-white border border-white/40 rounded-lg px-4 py-1.5 hover:bg-white/10 transition-colors">
+        Log in
+      </a>
+      <a href="/register" className="text-xs bg-white text-[#0F6E56] font-semibold rounded-lg px-4 py-1.5 hover:bg-white/90 transition-colors">
+        Register
+      </a>
     </>
   );
 }
