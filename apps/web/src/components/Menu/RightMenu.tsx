@@ -73,7 +73,7 @@ export function RightMenu() {
   const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   return (
-    <div className="w-full sm:w-56 h-full bg-white dark:bg-gray-800 p-4 flex flex-col gap-4 flex-shrink-0 overflow-y-auto">
+    <div className="w-full sm:w-56 bg-white dark:bg-gray-800 p-4 pb-32 flex flex-col gap-4 flex-shrink-0">
       <h2 className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pt-2">
         {loggedIn ? `Cart (${cart.length})` : "Your Cart"}
       </h2>
