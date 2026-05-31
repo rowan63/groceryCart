@@ -70,7 +70,7 @@ export function TopMenu({
   }
 
   return (
-    <div className="bg-[#1D9E75] sticky top-0 z-10 shadow-sm">
+    <div id="top-menu" className="bg-[#1D9E75] sticky top-0 z-10 shadow-sm">
       <div className="flex items-center justify-between px-4 h-16">
         <div className="flex items-center gap-3">
           <button onClick={onToggleLeft} className="text-white/80 hover:text-white border border-white/30 rounded-lg p-1.5 hover:bg-white/10 transition-colors" aria-label="Toggle left menu">
