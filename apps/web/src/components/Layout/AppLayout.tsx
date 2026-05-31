@@ -58,7 +58,7 @@ export function AppLayout({
           </Content>
         </div>
         <div className={`h-full flex-shrink-0 border-l border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200
-          ${rightOpen ? "fixed top-16 inset-x-0 bottom-0 z-20 w-full sm:relative sm:w-56 sm:top-auto sm:inset-auto" : "w-0 overflow-hidden"}`}>
+          ${rightOpen ? "fixed top-16 inset-x-0 bottom-0 z-20 w-full overflow-y-auto sm:relative sm:w-56 sm:top-auto sm:inset-auto" : "w-0 overflow-hidden"}`}>
           <RightMenu />
         </div>
       </div>
