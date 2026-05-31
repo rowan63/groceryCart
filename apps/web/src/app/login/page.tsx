@@ -21,7 +21,7 @@ export default function LoginPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-    
+
     const data = await res.json();
     if (!res.ok) {
       setError(data.error);
@@ -32,7 +32,7 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-100 dark:border-gray-700 w-full max-w-sm">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-100 dark:border-gray-700 w-full max-w-sm mx-4">
         <a href="/" className="block text-base font-semibold text-[#1D9E75] mb-6">FreshCart</a>
         <h1 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Sign in</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

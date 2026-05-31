@@ -11,7 +11,7 @@ export type Product = {
 };
 
 export const products: Product[] = [
-  { name: "Chicken Breast", description: "Free range chicken breast", price: 12.99, imageUrl: "", category: "meat-seafood", subcategory: "Chicken", stock: 50, active: true },
+  { name: "Chicken Breast", description: "Free range chicken breast", price: 12.99, imageUrl: "https://i.postimg.cc/9QDVPHhp/image.png", category: "meat-seafood", subcategory: "Chicken", stock: 50, active: true },
   { name: "Beef Mince", description: "500g lean beef mince", price: 8.99, imageUrl: "", category: "meat-seafood", subcategory: "Beef", stock: 30, active: true },
   { name: "Lamb Chops", description: "Fresh lamb chops", price: 15.99, imageUrl: "", category: "meat-seafood", subcategory: "Lamb", stock: 20, active: true },
   { name: "Atlantic Salmon", description: "Fresh Atlantic salmon fillet", price: 18.99, imageUrl: "", category: "meat-seafood", subcategory: "Seafood", stock: 25, active: true },

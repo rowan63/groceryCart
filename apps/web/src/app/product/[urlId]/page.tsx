@@ -22,7 +22,7 @@ export default async function Page({
 
   return (
     <AppLayout>
-      <article data-test-id={`product-${product.id}`} className="py-6 max-w-2xl">
+      <article data-test-id={`product-${product.id}`} className="py-6 px-4 max-w-2xl">
         <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 mb-4">
           <a href={`/category/${product.category}`} className="font-medium text-[#1D9E75] hover:underline">
             {categoryNames[product.category] ?? product.category}
@@ -31,8 +31,8 @@ export default async function Page({
           <span>{product.subcategory}</span>
         </div>
 
-        <div className="flex gap-8">
-          <div className="w-64 h-64 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row gap-8">
+          <div className="w-full sm:w-64 h-64 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
             {product.imageUrl && (
               <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
             )}
