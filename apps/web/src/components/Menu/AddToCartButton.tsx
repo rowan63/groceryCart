@@ -20,6 +20,7 @@ export function AddToCartButton({ productId }: { productId: number }) {
         body: JSON.stringify({ productId, quantity: 1 }),
       });
       window.dispatchEvent(new Event("cart-updated"));
+      window.dispatchEvent(new Event("open-cart"));
       router.refresh();
     }
   }

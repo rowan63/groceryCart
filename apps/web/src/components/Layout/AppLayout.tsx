@@ -24,6 +24,11 @@ export function AppLayout({
     }
   }, [pathname]);
 
+  useEffect(() => {
+    window.addEventListener("open-cart", () => setRightOpen(true));
+    return () => window.removeEventListener("open-cart", () => setRightOpen(true));
+  }, []);
+
   function toggleLeft() {
     setLeftOpen(next => !next);
   }
