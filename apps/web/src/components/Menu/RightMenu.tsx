@@ -28,6 +28,11 @@ export function RightMenu() {
       .catch(() => setLoggedIn(false));
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("cart-updated", fetchCart);
+    return () => window.removeEventListener("cart-updated", fetchCart);
+  }, []);
+
   async function fetchCart() {
     const res = await fetch("/api/cart");
     const data = await res.json();

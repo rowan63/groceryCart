@@ -19,7 +19,8 @@ export function AddToCartButton({ productId }: { productId: number }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, quantity: 1 }),
       });
-      window.location.reload();
+      window.dispatchEvent(new Event("cart-updated"));
+      router.refresh();
     }
   }
 
