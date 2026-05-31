@@ -45,7 +45,7 @@ export function AppLayout({
         onToggleRight={toggleRight}
       />
       <div className="flex flex-1 overflow-hidden">
-        <div className={`h-full overflow-y-auto flex-shrink-0 border-r border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200 ${mounted && leftOpen ? "w-56" : "w-0 overflow-hidden"}`}>
+        <div className={`h-full overflow-y-auto flex-shrink-0 border-r border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200 ${mounted && leftOpen ? "fixed inset-0 z-20 w-full sm:relative sm:w-56 sm:inset-auto" : "w-0 overflow-hidden"}`}>
           <LeftMenu />
         </div>
         <div className="flex-1 overflow-y-auto min-w-0">
@@ -53,7 +53,7 @@ export function AppLayout({
             {children}
           </Content>
         </div>
-        <div className={`h-full flex-shrink-0 border-l border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200 ${mounted && rightOpen ? "w-56" : "w-0 overflow-hidden"}`}>
+        <div className={`h-full flex-shrink-0 border-l border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200 ${mounted && rightOpen ? "fixed inset-0 z-20 w-full sm:relative sm:w-56 sm:inset-auto" : "w-0 overflow-hidden"}`}>
           <RightMenu />
         </div>
       </div>

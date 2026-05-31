@@ -33,6 +33,11 @@ export function RightMenu() {
     return () => window.removeEventListener("cart-updated", fetchCart);
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("auth-updated", checkAuth);
+    return () => window.removeEventListener("auth-updated", checkAuth);
+  }, []);
+
   async function fetchCart() {
     const res = await fetch("/api/cart");
     const data = await res.json();
@@ -55,6 +60,14 @@ export function RightMenu() {
       body: JSON.stringify({ cartItemId, quantity }),
     });
     fetchCart();
+  }
+
+  async function checkAuth() {
+    const res = await fetch("/api/auth/user");
+    const data = await res.json();
+    setLoggedIn(!!data.userId);
+    if (data.userId) fetchCart();
+    else setCart([]);
   }
 
   const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
