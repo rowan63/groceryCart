@@ -73,7 +73,7 @@ export function RightMenu() {
   const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   return (
-    <div className="w-56 h-full bg-white dark:bg-gray-800 p-4 flex flex-col gap-4 flex-shrink-0">
+    <div className="w-full sm:w-56 h-full bg-white dark:bg-gray-800 p-4 flex flex-col gap-4 flex-shrink-0">
       <h2 className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pt-2">
         {loggedIn ? `Cart (${cart.length})` : "Your Cart"}
       </h2>
@@ -86,7 +86,7 @@ export function RightMenu() {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-2 flex-1 overflow-y-auto">
+          <div className="flex flex-col gap-2 flex-1 overflow-y-auto min-h-0">
             {cart.length === 0 ? (
               <p className="text-xs text-gray-400 dark:text-gray-500">Your cart is empty.</p>
             ) : (
@@ -109,7 +109,7 @@ export function RightMenu() {
             )}
           </div>
           {cart.length > 0 && (
-            <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
+            <div className="border-t border-gray-100 dark:border-gray-700 pt-4 flex-shrink-0">
               <div className="flex justify-between mb-3">
                 <p className="text-xs text-gray-400">Total</p>
                 <p className="text-xs font-semibold text-gray-900 dark:text-white">${total.toFixed(2)}</p>
