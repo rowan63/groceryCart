@@ -14,8 +14,8 @@ export default async function Page({
       active: true,
       ...(category ? { category } : {}),
       OR: [
-        { name: { contains: q } },
-        { description: { contains: q } },
+        { name: { contains: q, mode: 'insensitive' } },
+        { description: { contains: q, mode: 'insensitive' } },
       ],
     },
   });

@@ -10,6 +10,7 @@ type CartItem = {
     id: number;
     name: string;
     price: number;
+    salePrice: number | null;
   };
 };
 
@@ -70,7 +71,7 @@ export function RightMenu() {
     else setCart([]);
   }
 
-  const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const total = cart.reduce((sum, item) => sum + (item.product.salePrice ?? item.product.price) * item.quantity, 0);
 
   return (
     <div className="w-full sm:w-56 bg-white dark:bg-gray-800 p-4 pb-32 flex flex-col gap-4 flex-shrink-0">
@@ -102,7 +103,7 @@ export function RightMenu() {
                       <span className="text-xs font-medium text-gray-700 dark:text-gray-300 w-5 text-center">{item.quantity}</span>
                       <button onClick={() => handleQuantity(item.id, item.quantity + 1)} className="w-6 h-6 rounded-md border border-gray-200 dark:border-gray-600 text-xs text-gray-500 hover:border-[#1D9E75] hover:text-[#1D9E75] transition-colors">+</button>
                     </div>
-                    <p className="text-xs font-semibold text-[#1D9E75]">${(item.product.price * item.quantity).toFixed(2)}</p>
+                    <p className="text-xs font-semibold text-[#1D9E75]">${((item.product.salePrice ?? item.product.price) * item.quantity).toFixed(2)}</p>
                   </div>
                 </div>
               ))
