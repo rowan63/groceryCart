@@ -71,11 +71,7 @@ export function RightMenu() {
     else setCart([]);
   }
 
-<<<<<<< Updated upstream
-  const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-=======
   const total = cart.reduce((sum, item) => sum + (item.product.salePrice ?? item.product.price) * item.quantity, 0);
->>>>>>> Stashed changes
 
   return (
     <div className="w-full sm:w-56 bg-white dark:bg-gray-800 p-4 pb-32 flex flex-col gap-4 flex-shrink-0">

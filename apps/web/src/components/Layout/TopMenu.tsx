@@ -106,7 +106,7 @@ export function TopMenu({
             </button>
           )}
           <button onClick={onToggleRight} className="text-white/80 hover:text-white border border-white/30 rounded-lg px-4 py-2 text-sm hover:bg-white/10 transition-colors">
-            Cart
+            {loggedIn ? "Cart" : "Log In"}
           </button>
         </div>
       </div>

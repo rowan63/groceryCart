@@ -15,7 +15,13 @@ export function AppLayout({
 }: PropsWithChildren<{ query?: string; category?: string }>) {
   const [leftOpen, setLeftOpen] = useState(false);
   const [rightOpen, setRightOpen] = useState(false);
+  const [navHeight, setNavHeight] = useState(64);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const nav = document.getElementById("top-menu");
+    if (nav) setNavHeight(nav.offsetHeight);
+  });
 
   useEffect(() => {
     if (window.innerWidth < 640) {
@@ -37,6 +43,8 @@ export function AppLayout({
     setRightOpen(next => !next);
   }
 
+  const mobileMenuStyle = { top: `${navHeight}px` };
+
   return (
     <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
       <TopMenu
@@ -48,8 +56,10 @@ export function AppLayout({
         onToggleRight={toggleRight}
       />
       <div className="flex flex-1 overflow-hidden">
-        <div className={`h-full overflow-y-auto flex-shrink-0 border-r border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200
-          ${leftOpen ? "fixed top-16 inset-x-0 bottom-0 z-20 w-full sm:relative sm:w-56 sm:top-auto sm:inset-auto" : "w-0 overflow-hidden"}`}>
+        <div
+          style={leftOpen ? mobileMenuStyle : undefined}
+          className={`h-full overflow-y-auto flex-shrink-0 border-r border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200
+          ${leftOpen ? "fixed inset-x-0 bottom-0 z-20 w-full sm:relative sm:w-56 sm:top-auto sm:inset-auto" : "w-0 overflow-hidden"}`}>
           <LeftMenu />
         </div>
         <div className="flex-1 overflow-y-auto min-w-0">
@@ -57,8 +67,10 @@ export function AppLayout({
             {children}
           </Content>
         </div>
-        <div className={`h-full flex-shrink-0 border-l border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200
-          ${rightOpen ? "fixed top-16 inset-x-0 bottom-0 z-20 w-full overflow-y-auto sm:relative sm:w-56 sm:top-auto sm:inset-auto" : "w-0 overflow-hidden"}`}>
+        <div
+          style={rightOpen ? mobileMenuStyle : undefined}
+          className={`h-full flex-shrink-0 border-l border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200
+          ${rightOpen ? "fixed inset-x-0 bottom-0 z-20 w-full overflow-y-auto sm:relative sm:w-56 sm:top-auto sm:inset-auto" : "w-0 overflow-hidden"}`}>
           <RightMenu />
         </div>
       </div>
