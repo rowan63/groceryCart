@@ -16,8 +16,8 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       COURSE_ID: full-stack-development-comp3036-2026
-      PASSWORD: 123
-      JWT_SECRET: secret
+      PASSWORD: ${{ secrets.PASSWORD }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
       # NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
       # NEXTAUTH_URL: http://127.0.0.1:3001/
       # VERCEL_URL: http://127.0.0.1:3001/
