@@ -6,10 +6,10 @@ export default async function Home() {
   const products = await client.db.product.findMany({
     where: { active: true }
   });
-
+  const specials = products.filter(p => p.onSpecial);
   return (
     <AppLayout>
-      <Main products={products} />
+      <Main products={products} specials={specials} />
     </AppLayout>
   );
 }

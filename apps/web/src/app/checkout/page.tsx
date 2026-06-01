@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 type CartItem = {
     id: number;
     quantity: number;
-    product: { id: number; name: string; price: number };
+    product: { id: number; name: string; price: number; salePrice: number | null };
 };
 
 export default function CheckoutPage() {
@@ -28,7 +28,7 @@ export default function CheckoutPage() {
             });
     }, [router]);
 
-    const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    const total = cart.reduce((sum, item) => sum + (item.product.salePrice ?? item.product.price) * item.quantity, 0);
 
     function validate() {
         const errors: Record<string, string> = {};
@@ -67,7 +67,7 @@ export default function CheckoutPage() {
                     {cart.map((item) => (
                         <div key={item.id} className="flex justify-between px-4 py-3 text-xs text-gray-600 dark:text-gray-300">
                             <span>{item.product.name} <span className="text-gray-400">× {item.quantity}</span></span>
-                            <span className="font-semibold">${(item.product.price * item.quantity).toFixed(2)}</span>
+                            <span className="font-semibold">${((item.product.salePrice ?? item.product.price) * item.quantity).toFixed(2)}</span>
                         </div>
                     ))}
                     <div className="flex justify-between px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
@@ -81,27 +81,27 @@ export default function CheckoutPage() {
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Payment details</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Name on card</label>
-                        <input name="name" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Jane Smith"
+                        <label htmlFor="name" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Name on card</label>
+                        <input id="name" name="name" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Jane Smith"
                             className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75] dark:bg-gray-800 dark:border-gray-600 dark:text-white ${fieldErrors.name ? "border-red-400" : "border-gray-200"}`} />
                         {fieldErrors.name && <p className="text-red-400 text-xs mt-1">{fieldErrors.name}</p>}
                     </div>
                     <div>
-                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Card number</label>
-                        <input name="cardNumber" value={form.cardNumber} onChange={(e) => setForm((f) => ({ ...f, cardNumber: e.target.value }))} placeholder="1234 5678 9012 3456"
+                        <label htmlFor="cardNumber" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Card number</label>
+                        <input id="cardNumber" name="cardNumber" value={form.cardNumber} onChange={(e) => setForm((f) => ({ ...f, cardNumber: e.target.value }))} placeholder="1234 5678 9012 3456"
                             className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75] dark:bg-gray-800 dark:border-gray-600 dark:text-white ${fieldErrors.cardNumber ? "border-red-400" : "border-gray-200"}`} />
                         {fieldErrors.cardNumber && <p className="text-red-400 text-xs mt-1">{fieldErrors.cardNumber}</p>}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Expiry</label>
-                            <input name="expiry" value={form.expiry} onChange={(e) => setForm((f) => ({ ...f, expiry: e.target.value }))} placeholder="MM/YY"
+                            <label htmlFor="expiry" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Expiry</label>
+                            <input id="expiry" name="expiry" value={form.expiry} onChange={(e) => setForm((f) => ({ ...f, expiry: e.target.value }))} placeholder="MM/YY"
                                 className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75] dark:bg-gray-800 dark:border-gray-600 dark:text-white ${fieldErrors.expiry ? "border-red-400" : "border-gray-200"}`} />
                             {fieldErrors.expiry && <p className="text-red-400 text-xs mt-1">{fieldErrors.expiry}</p>}
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">CVV</label>
-                            <input name="cvv" value={form.cvv} onChange={(e) => setForm((f) => ({ ...f, cvv: e.target.value }))} placeholder="123"
+                            <label htmlFor="cvv" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">CVV</label>
+                            <input id="cvv" name="cvv" value={form.cvv} onChange={(e) => setForm((f) => ({ ...f, cvv: e.target.value }))} placeholder="123"
                                 className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75] dark:bg-gray-800 dark:border-gray-600 dark:text-white ${fieldErrors.cvv ? "border-red-400" : "border-gray-200"}`} />
                             {fieldErrors.cvv && <p className="text-red-400 text-xs mt-1">{fieldErrors.cvv}</p>}
                         </div>

@@ -58,8 +58,15 @@ export function ProductList({ products }: { products: Product[] }) {
               <p className="text-sm font-semibold text-gray-900">{product.name}</p>
               <p className="text-xs text-gray-400">{product.description}</p>
               <div className="mt-2 flex items-center gap-3">
-                <span className="text-sm font-semibold text-[#1D9E75]">${product.price.toFixed(2)}</span>
-                <span className="text-xs text-gray-400">{product.stock} in stock</span>
+                {product.onSpecial && product.salePrice ? (
+                  <>
+                    <span className="text-sm font-semibold text-[#1D9E75]">${product.salePrice.toFixed(2)}</span>
+                    <span className="text-xs line-through text-gray-400">${product.price.toFixed(2)}</span>
+                    <span className="bg-[#1D9E75] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">SALE</span>
+                  </>
+                ) : (
+                  <span className="text-sm font-semibold text-[#1D9E75]">${product.price.toFixed(2)}</span>
+                )}                <span className="text-xs text-gray-400">{product.stock} in stock</span>
                 <button onClick={() => handleToggle(product.id, product.active)}
                   className={`text-xs px-2.5 py-1 rounded-full font-medium cursor-pointer transition-colors ${product.active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-400"}`}>
                   {product.active ? "Active" : "Inactive"}

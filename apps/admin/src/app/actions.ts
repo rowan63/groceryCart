@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { client } from "@repo/db/client";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
@@ -38,7 +39,14 @@ const productSchema = z.object({
     category: z.string().trim().min(1, "Category is required"),
     subcategory: z.string().trim(),
     stock: z.coerce.number().int().min(0, "Stock cannot be negative"),
+    imageUrl: z.string().trim().optional().default(""),
+    onSpecial: z.preprocess(val => val === "1" || val === true, z.boolean()),
+    salePrice: z.union([z.coerce.number().positive(), z.literal(""), z.null()]).transform(val => val === "" ? null : val).optional(),
 });
+
+export async function revalidateProducts() {
+    revalidatePath("/");
+}
 
 export async function createProduct(formData: FormData) {
     const data = {
@@ -48,6 +56,9 @@ export async function createProduct(formData: FormData) {
         category: formData.get('category') as string,
         subcategory: formData.get('subcategory') as string,
         stock: formData.get('stock') as string,
+        imageUrl: formData.get('imageUrl') as string,
+        onSpecial: formData.get('onSpecial') as string,
+        salePrice: formData.get('salePrice') || null,
     };
 
     const result = productSchema.safeParse(data);
@@ -65,6 +76,9 @@ export async function updateProduct(id: number, formData: FormData) {
         category: formData.get('category') as string,
         subcategory: formData.get('subcategory') as string,
         stock: formData.get('stock') as string,
+        imageUrl: formData.get('imageUrl') as string,
+        onSpecial: formData.get('onSpecial') as string,
+        salePrice: formData.get('salePrice') || null,
     };
 
     const result = productSchema.safeParse(data);
@@ -76,4 +90,5 @@ export async function updateProduct(id: number, formData: FormData) {
 
 export async function toggleActive(id: number, active: boolean) {
     await client.db.product.update({ where: { id }, data: { active: !active } });
+    revalidatePath("/");
 }

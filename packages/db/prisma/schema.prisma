@@ -26,6 +26,8 @@ model Product {
   name        String
   description String      @default("")
   price       Float
+  salePrice   Float?
+  onSpecial   Boolean     @default(false)
   imageUrl    String      @default("")
   category    String
   subcategory String      @default("")

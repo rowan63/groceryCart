@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
 
-    const total = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    const total = cart.items.reduce((sum, item) => sum + (item.product.salePrice ?? item.product.price) * item.quantity, 0);
 
     const order = await client.db.$transaction(async (tx) => {
         const newOrder = await tx.order.create({
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
                     create: cart.items.map((item) => ({
                         productId: item.productId,
                         quantity: item.quantity,
-                        price: item.product.price,
+                        price: item.product.salePrice ?? item.product.price,
                     })),
                 },
             },
