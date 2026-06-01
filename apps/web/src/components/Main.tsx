@@ -4,11 +4,11 @@ import { SpecialsList } from "./Products/SpecialList";
 
 export function Main({
   products,
-  specials,
+  specials = [],
   className,
 }: {
   products: Product[];
-  specials: Product[];
+  specials?: Product[];
   className?: string;
 }) {
   return (

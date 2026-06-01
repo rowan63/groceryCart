@@ -41,8 +41,15 @@ export default async function Page({
           <div className="flex flex-col gap-3 flex-1">
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{product.name}</h1>
             <p className="text-sm text-gray-400 dark:text-gray-500 leading-relaxed">{product.description}</p>
-            <div className="text-2xl font-semibold text-[#1D9E75] mt-auto">${product.price.toFixed(2)}</div>
-            <div className="text-xs text-gray-400">{product.stock} in stock</div>
+            <div className="flex items-center gap-2 mt-auto">
+              {product.onSpecial && product.salePrice && (
+                <div className="text-2xl font-semibold text-[#1D9E75]">${product.salePrice.toFixed(2)}</div>
+              )}
+              <div className={`${product.onSpecial ? "text-lg line-through text-gray-400" : "text-2xl font-semibold text-[#1D9E75]"}`}>${product.price.toFixed(2)}</div>
+              {product.onSpecial && (
+                <span className="bg-[#1D9E75] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">ON SPECIAL</span>
+              )}
+            </div>            <div className="text-xs text-gray-400">{product.stock} in stock</div>
             <div className="max-w-xs">
               <AddToCartButton productId={product.id} />
             </div>
