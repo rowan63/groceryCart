@@ -8,13 +8,12 @@ test("returns empty array if no history are provides", async () => {
 test("returns sorted counts by year and month", async () => {
   await expect(
     await history([
-      { date: new Date("01 Jan 2022"), active: true },
-      { date: new Date("08 Jan 2022"), active: true },
-      { date: new Date("07 Jan 2022"), active: true },
-      { date: new Date("07 Mar 2020"), active: true },
-      { date: new Date("07 Apr 2020"), active: true },
-      { date: new Date("07 May 2024"), active: true },
-      { date: new Date("01 Jan 2012"), active: false },
+      { createdAt: new Date("01 Jan 2022") },
+      { createdAt: new Date("08 Jan 2022") },
+      { createdAt: new Date("07 Jan 2022") },
+      { createdAt: new Date("07 Mar 2020") },
+      { createdAt: new Date("07 Apr 2020") },
+      { createdAt: new Date("07 May 2024") },
     ]),
   ).toEqual([
     { month: 5, year: 2024, count: 1 },
