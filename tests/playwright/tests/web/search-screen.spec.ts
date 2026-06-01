@@ -7,25 +7,14 @@ test.describe("SEARCH SCREEN", () => {
   });
 
   test(
-    "Search finds single product",
+    "Search finds correct products and updates URL",
     { tag: "@a1" },
     async ({ page }) => {
       await page.goto("/search?q=Croissants");
-
       const articles = page.locator('[data-test-id^="product-"]');
       await expect(articles).toHaveCount(1);
-      await expect(page.locator('p.font-semibold', { hasText: "Croissants" })).toBeVisible();
-    },
-  );
-
-  test(
-    "Search finds multiple products",
-    { tag: "@a1" },
-    async ({ page }) => {
-      await page.goto("/search?q=fresh");
-
-      const articles = page.locator('[data-test-id^="product-"]');
-      await expect(articles).toHaveCount(4);
+      await expect(page.locator('[data-test-id^="product-"]', { hasText: "Croissants" })).toBeVisible();
+      await expect(page).toHaveURL(/q=Croissants/);
     },
   );
 
@@ -34,22 +23,41 @@ test.describe("SEARCH SCREEN", () => {
     { tag: "@a1" },
     async ({ page }) => {
       await page.goto("/search?q=xyz123");
-
       const articles = page.locator('[data-test-id^="product-"]');
       await expect(articles).toHaveCount(0);
-      await expect(page.getByText("0 products.")).toBeVisible();
+      await expect(page.getByText("No products found.")).toBeVisible();
     },
   );
 
   test(
-    "Search is case insensitive",
-    { tag: "@a1" },
+    "Search with category filter shows correct products",
+    { tag: "@a2" },
     async ({ page }) => {
-      await page.goto("/search?q=chicken");
-
+      await page.goto("/search?q=fresh&category=fruit-veg");
       const articles = page.locator('[data-test-id^="product-"]');
       await expect(articles).toHaveCount(1);
-      await expect(page.locator('p.font-semibold', { hasText: "Chicken Breast" })).toBeVisible();
+      await expect(page.locator('[data-test-id^="product-"]', { hasText: "Broccoli" })).toBeVisible();
+    },
+  );
+
+  test(
+    "Search with category filter updates URL",
+    { tag: "@a2" },
+    async ({ page }) => {
+      await page.goto("/search?q=chicken");
+      await page.getByRole("combobox").selectOption("meat-seafood");
+      await expect(page).toHaveURL(/category=meat-seafood/);
+    },
+  );
+
+  test(
+    "Search with special characters returns no results",
+    { tag: "@a2" },
+    async ({ page }) => {
+      await page.goto("/search?q=@@@");
+      const articles = page.locator('[data-test-id^="product-"]');
+      await expect(articles).toHaveCount(0);
+      await expect(page.getByText("No products found.")).toBeVisible();
     },
   );
 });

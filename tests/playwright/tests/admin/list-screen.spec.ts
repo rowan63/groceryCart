@@ -5,289 +5,123 @@ test.beforeAll(async () => {
   await seed();
 });
 
+async function adminLogin(page: any) {
+  await page.goto("/");
+  await page.getByLabel("Email").fill("admin@test.com");
+  await page.getByLabel("Password").fill("password");
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await expect(page.locator("article")).not.toHaveCount(0);
+}
+
 test.describe("ADMIN LIST SCREEN", () => {
-  test.beforeAll(async () => {
-    await seed();
-  });
-
   test(
-    "Show all posts",
-    {
-      tag: "@a2",
-    },
-    async ({ userPage }) => {
-      await userPage.goto("/");
-
-      await expect(await userPage.locator("article").count()).toBe(4);
+    "Shows all products after login",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      const articles = page.locator("article");
+      await expect(articles).not.toHaveCount(0);
     },
   );
 
   test(
-    "Filter by content",
-    {
-      tag: "@a2",
-    },
-    async ({ userPage }) => {
-      await userPage.goto("/");
-
-      // LIST SCREEN > On the top is a filter screen that allows to filter posts by Title or content
-      await userPage.getByLabel("Filter by Content:").fill("Boost");
-      await expect(await userPage.locator("article").count()).toBe(1);
-      await expect(
-        userPage.getByText("Boost your conversion rate"),
-      ).toBeVisible();
-
-      await userPage.getByLabel("Filter by Content:").fill("post2");
-      await expect(
-        userPage.getByText("Better front ends with Fatboy Slim"),
-      ).toBeVisible();
-
-      await userPage.getByLabel("Filter by Content:").clear();
-      await expect(await userPage.locator("article").count()).toBe(4);
+    "Filter by name shows matching products",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      await page.getByLabel("Filter by Name").fill("Chicken");
+      await expect(page.locator("article")).toHaveCount(1);
+      await expect(page.getByText("Chicken Breast", { exact: true })).toBeVisible();
     },
   );
 
   test(
-    "Filter by tag",
-    {
-      tag: "@a2",
-    },
-    async ({ userPage }) => {
-      await userPage.goto("/");
-
-      // LIST SCREEN > On the top is a filter screen that allows to filter posts by tags
-      await userPage.getByLabel("Filter by Tag:").fill("Front");
-      await expect(await userPage.locator("article").count()).toBe(2);
-      await expect(
-        userPage.getByText("Better front ends with Fatboy Slim"),
-      ).toBeVisible();
-      await expect(
-        userPage.getByText("No front end framework is the best"),
-      ).toBeVisible();
-      await userPage.getByLabel("Filter by Tag:").clear();
+    "Filter by name shows no results for no match",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      await page.getByLabel("Filter by Name").fill("xyz123notaproduct");
+      await expect(page.locator("article")).toHaveCount(0);
     },
   );
 
   test(
-    "Filter by date",
-    {
-      tag: "@a2",
-    },
-    async ({ userPage }) => {
-      await userPage.goto("/");
-
-      // LIST SCREEN > On the top is a filter screen that allows to filter posts by date
-      await userPage
-        .getByLabel("Filter by Date Created:")
-        .pressSequentially("01012022");
-      await expect(await userPage.locator("article").count()).toBe(2);
-      await expect(
-        userPage.getByText("Boost your conversion rate"),
-      ).toBeVisible();
-      await expect(
-        userPage.getByText("No front end framework is the best"),
-      ).toBeVisible();
-      await userPage.getByLabel("Filter by Date Created:").clear();
+    "Filter by category shows matching products",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      await page.getByLabel("Filter by Category").selectOption("bakery");
+      await expect(page.getByText("Sourdough Bread", { exact: true })).toBeVisible();
+      await expect(page.getByText("Croissants", { exact: true })).toBeVisible();
     },
   );
 
   test(
-    "Combine Filters",
-    {
-      tag: "@a2",
-    },
-    async ({ userPage }) => {
-      await userPage.goto("/");
-
-      // LIST SCREEN > On the top is a filter screen that allows to filter by visibility
-      await userPage.getByLabel("Filter by Tag:").fill("Front");
-      await userPage
-        .getByLabel("Filter by Date Created:")
-        .pressSequentially("01012022");
-      await expect(await userPage.locator("article").count()).toBe(1);
-      await expect(
-        userPage.getByText("No front end framework is the best"),
-      ).toBeVisible();
+    "Filter by category combined with name filter works",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      await page.getByLabel("Filter by Category").selectOption("meat-seafood");
+      await page.getByLabel("Filter by Name").fill("Salmon");
+      await expect(page.locator("article")).toHaveCount(1);
+      await expect(page.getByText("Atlantic Salmon", { exact: true })).toBeVisible();
     },
   );
 
   test(
-    "Sort items",
-    {
-      tag: "@a2",
-    },
-    async ({ userPage }) => {
-      await userPage.goto("/");
-
-      // LIST SCREEN > Users can sort posts by name or creation date, both ascending and descending
-
-      // title-asc
-      await userPage.getByLabel("Sort By:").selectOption("title-asc");
-      let articles = await userPage.locator("article").all();
-
-      expect(await articles[0].innerText()).toContain(
-        "Better front ends with Fatboy Slim",
-      );
-      expect(await articles[1].innerText()).toContain(
-        "Boost your conversion rate",
-      );
-      expect(await articles[2].innerText()).toContain(
-        "No front end framework is the best",
-      );
-      expect(await articles[3].innerText()).toContain(
-        "Visual Basic is the future",
-      );
-
-      // title-desc
-      await userPage.getByLabel("Sort By:").selectOption("title-desc");
-      articles = await userPage.locator("article").all();
-
-      expect(await articles[3].innerText()).toContain(
-        "Better front ends with Fatboy Slim",
-      );
-      expect(await articles[2].innerText()).toContain(
-        "Boost your conversion rate",
-      );
-      expect(await articles[1].innerText()).toContain(
-        "No front end framework is the best",
-      );
-      expect(await articles[0].innerText()).toContain(
-        "Visual Basic is the future",
-      );
-
-      // title-asc
-      await userPage.getByLabel("Sort By:").selectOption("date-asc");
-      articles = await userPage.locator("article").all();
-
-      expect(await articles[1].innerText()).toContain(
-        "Better front ends with Fatboy Slim",
-      );
-      expect(await articles[2].innerText()).toContain(
-        "Boost your conversion rate",
-      );
-      expect(await articles[3].innerText()).toContain(
-        "No front end framework is the best",
-      );
-      expect(await articles[0].innerText()).toContain(
-        "Visual Basic is the future",
-      );
-
-      // title-desc
-      await userPage.getByLabel("Sort By:").selectOption("date-desc");
-      articles = await userPage.locator("article").all();
-
-      expect(await articles[2].innerText()).toContain(
-        "Better front ends with Fatboy Slim",
-      );
-      expect(await articles[1].innerText()).toContain(
-        "Boost your conversion rate",
-      );
-      expect(await articles[0].innerText()).toContain(
-        "No front end framework is the best",
-      );
-      expect(await articles[3].innerText()).toContain(
-        "Visual Basic is the future",
-      );
+    "Clicking edit navigates to edit page",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      await page.locator("article").first().getByRole("link", { name: "Edit" }).click();
+      await expect(page).toHaveURL(/\/product\/\d+/);
     },
   );
 
   test(
-    "List items",
-    {
-      tag: "@a2",
-    },
-    async ({ userPage }) => {
-      await userPage.goto("/");
-
-      // LIST SCREEN > The list post item displays the image, title of the post and metadata
-      const article = await userPage.locator("article").first();
-      await expect(
-        article.getByText("No front end framework is the best"),
-      ).toBeVisible();
-      await expect(article.locator("img").first()).toBeVisible();
-
-      // LIST SCREEN > The list post items display metadata such as category, tags, and "active" status
-      await expect(article.getByText("#Front-End, #Dev Tools")).toBeVisible();
-      await expect(article.getByText("Posted on Dec 16, 2024")).toBeVisible();
-      await expect(article.getByText("React")).toBeVisible();
-      await expect(article.getByText("Active")).toBeVisible();
-
-      // LIST SCREEN > The active status is a button that, on click, just displays a message
-      await expect(article.locator('button:has-text("Active")')).toBeVisible();
+    "Add product button navigates to create page",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      await page.getByRole("link", { name: "Add product" }).click();
+      await expect(page).toHaveURL(/\/products\/create/);
     },
   );
 
   test(
-    "Move to detail screen",
-    {
-      tag: "@a2",
-    },
-    async ({ userPage }) => {
-      await userPage.goto("/");
-
-      // LIST SCREEN > Clicking on the title takes the user to the MODIFY SCREEN, allowing the user to modify the current post
-      await userPage.getByText("No front end framework is the best").click();
-      await expect(userPage).toHaveURL(
-        "/post/no-front-end-framework-is-the-best",
-      );
-    },
-  );
-
-  test(
-    "Move to create post screen",
-    {
-      tag: "@a2",
-    },
-    async ({ userPage }) => {
-      await userPage.goto("/");
-
-      // LIST SCREEN > There is a button to create new posts
-      await expect(userPage.getByText("Create Post")).toBeVisible();
-
-      // LIST SCREEN > Clicking on the "Create Post" button takes the user to the CREATE SCREEN
-      await userPage.locator('a:has-text("Create Post")').click();
-      await expect(userPage).toHaveURL("/posts/create");
-    },
-  );
-
-  test(
-    "Can activate / deactivate posts",
-    {
-      tag: "@a3",
-    },
-    async ({ userPage }) => {
+    "Toggle active to inactive works and persists after reload",
+    { tag: "@a3" },
+    async ({ page }) => {
       await seed();
-      await userPage.goto("/");
+      await adminLogin(page);
 
-      //  BACKEND / ADMIN / LIST SCREEN > Logged in user can activate / deactivate a post clicking on the activate button, automatically saving changes
+      const article = page.locator("article").first();
+      const productName = await article.locator("p.text-sm.font-semibold").first().innerText();
 
-      let article = await userPage.locator("article").first();
-      await expect(article.locator('button:has-text("Active")')).toBeVisible();
-      await expect(
-        article.locator('button:has-text("Inactive")'),
-      ).not.toBeVisible();
+      await article.getByRole("button", { name: "Active" }).click();
+      await expect(article.getByRole("button", { name: "Inactive" })).toBeVisible();
 
-      await article.locator('button:has-text("Active")').click();
+      await page.goto("http://localhost:3001/");
+      await expect(page.locator('[data-test-id^="product-"]').filter({ hasText: productName })).toHaveCount(0);
+    },
+  );
 
-      article = await userPage.locator("article").first();
-      await expect(
-        article.getByText("Active", { exact: true }),
-      ).not.toBeVisible();
-      await expect(
-        article.getByText("Inactive", { exact: true }),
-      ).toBeVisible();
+  test(
+    "Toggle inactive to active works and persists after reload",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await seed();
+      await adminLogin(page);
 
-      // reload page and check
+      const article = page.locator("article").first();
+      await article.getByRole("button", { name: "Active" }).click();
+      await expect(article.getByRole("button", { name: "Inactive" })).toBeVisible();
 
-      await userPage.reload();
+      await article.getByRole("button", { name: "Inactive" }).click();
+      await expect(article.getByRole("button", { name: "Active" })).toBeVisible();
 
-      article = await userPage.locator("article").first();
-      await expect(
-        article.getByText("Active", { exact: true }),
-      ).not.toBeVisible();
-      await expect(
-        article.getByText("Inactive", { exact: true }),
-      ).toBeVisible();
+      await page.reload();
+      await expect(page.locator("article").first().getByRole("button", { name: "Active" })).toBeVisible();
     },
   );
 });

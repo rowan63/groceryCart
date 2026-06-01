@@ -5,70 +5,100 @@ test.beforeAll(async () => {
   await seed();
 });
 
+async function adminLogin(page: any) {
+  await page.goto("/");
+  await page.getByLabel("Email").fill("admin@test.com");
+  await page.getByLabel("Password").fill("password");
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await expect(page.locator("article")).not.toHaveCount(0);
+}
+
 test.describe("ADMIN HOME SCREEN", () => {
   test(
-    "Shows login screen",
-    {
-      tag: "@a2",
-    },
+    "Shows login screen when logged out",
+    { tag: "@a3" },
     async ({ page }) => {
       await page.goto("/");
-      await expect(page.getByText("Sign In", { exact: true })).toBeVisible();
-
-      // HOME SCREEN > Shows Login screen if not logged
-      await expect(
-        page.getByText("Sign in to your account", { exact: true }),
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
+      await expect(page.getByLabel("Email")).toBeVisible();
+      await expect(page.getByLabel("Password")).toBeVisible();
     },
   );
 
   test(
-    "Can login",
-    {
-      tag: "@a2",
-    },
+    "Login page has email and password fields",
+    { tag: "@a3" },
     async ({ page }) => {
       await page.goto("/");
+      await expect(page.getByLabel("Email")).toBeVisible();
+      await expect(page.getByLabel("Password")).toBeVisible();
+      await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
+    },
+  );
 
-      // HOME SCREEN > Authenticate the current client using a hard-coded password
-      await page.getByLabel("Password", { exact: true }).fill("123");
-      await page.getByText("Sign In", { exact: true }).click();
+  test(
+    "Valid admin credentials logs in",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      await expect(page.getByText("FreshCart Admin")).toBeVisible();
+      await expect(page.locator("article")).not.toHaveCount(0);
+    },
+  );
 
-      await expect(page.getByText("Admin of Full Stack Blog")).toBeVisible();
-
-      // HOME SCREEN > Use a cookie to remember the signed-in state.
+  test(
+    "Auth cookie is set after login",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
       const cookies = await page.context().cookies();
-      const passwordCookie = cookies.find(
-        (cookie) => cookie.name === "auth_token",
-      );
-      expect(passwordCookie).toBeDefined();
-
-      // HOME SCREEN > There must be logout button
-      await expect(page.getByText("Logout")).toBeVisible();
-
-      //  HOME SCREEN > Clicking the logout button logs user out
-      await page.getByText("Logout").click();
-
-      await expect(await page.locator("article")).toHaveCount(0);
-      await expect(page.getByText("Sign in to your account")).toBeVisible();
+      const authCookie = cookies.find((c) => c.name === "auth_token");
+      expect(authCookie).toBeDefined();
     },
   );
 
   test(
-    "Shows home screen to authorised user",
-    {
-      tag: "@a2",
+    "Invalid credentials stays on login page",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await page.goto("/");
+      await page.getByLabel("Email").fill("admin@test.com");
+      await page.getByLabel("Password").fill("wrongpassword");
+      await page.getByRole("button", { name: "Sign in" }).click();
+      await expect(page.getByLabel("Email")).toBeVisible();
     },
-    async ({ userPage }) => {
-      await userPage.goto("/");
+  );
 
-      // shows title
-      await expect(
-        userPage.getByText("Admin of Full Stack Blog", { exact: true }),
-      ).toBeVisible();
+  test(
+    "Non-admin user cannot log in",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await page.goto("/");
+      await page.getByLabel("Email").fill("test@test.com");
+      await page.getByLabel("Password").fill("password");
+      await page.getByRole("button", { name: "Sign in" }).click();
+      await expect(page.getByLabel("Email")).toBeVisible();
+      await expect(page.locator("article")).toHaveCount(0);
+    },
+  );
 
-      // LIST SCREEN > Article list is only accessible to logged-in users.
-      await expect(await userPage.locator("article").count()).toBe(4);
+  test(
+    "Logout button visible when logged in",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      await expect(page.getByRole("button", { name: "Logout" })).toBeVisible();
+    },
+  );
+
+  test(
+    "Clicking logout logs user out",
+    { tag: "@a3" },
+    async ({ page }) => {
+      await adminLogin(page);
+      await page.getByRole("button", { name: "Logout" }).click();
+      await expect(page.getByLabel("Email")).toBeVisible();
+      await expect(page.locator("article")).toHaveCount(0);
     },
   );
 });

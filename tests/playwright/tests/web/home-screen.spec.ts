@@ -12,72 +12,71 @@ test.describe("HOME SCREEN", () => {
     await page.locator('[data-test-id^="product-"]').first().getByText("Add to cart").click();
     await expect(page).toHaveURL(/\/login/);
   });
-  
-  test("Show 15 products", { tag: "@a1" }, async ({ page }) => {
+
+  test("Home page shows all products", { tag: "@a1" }, async ({ page }) => {
     await page.goto("/");
     const articles = page.locator('[data-test-id^="product-"]');
     await expect(articles).toHaveCount(15);
   });
 
-  test("Products have add to cart button", { tag: "@a1" }, async ({ page }) => {
+  test("Categories are displayed in the left menu and work", { tag: "@a1" }, async ({ page }) => {
     await page.goto("/");
-    const first = page.locator('[data-test-id^="product-"]').first();
-    await expect(first.getByText("Add to cart")).toBeVisible();
-  });
-
-  test("Category links show in left menu", { tag: "@a1" }, async ({ page }) => {
-    await page.goto("/");
+    await page.locator('button[aria-label="Toggle left menu"]').click();
     await expect(page.getByText("Poultry, Meat & Seafood")).toBeVisible();
     await expect(page.getByText("Fruit & Veg")).toBeVisible();
     await expect(page.getByText("Dairy, Eggs & Fridge")).toBeVisible();
     await expect(page.getByText("Bakery")).toBeVisible();
     await expect(page.getByText("Snacks & Confectionery")).toBeVisible();
-  });
-
-  test("Subcategory links show under category", { tag: "@a1" }, async ({ page }) => {
-    await page.goto("/");
-    await expect(page.getByRole("link", { name: "Chicken" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Beef" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Lamb" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Seafood" })).toBeVisible();
-  });
-
-  test("Clicking category navigates to category page", { tag: "@a1" }, async ({ page }) => {
-    await page.goto("/");
-    await page.getByRole("link", { name: "Bakery" }).click();
+    await page.locator('nav').getByRole("link", { name: "Bakery" }).click();
     await expect(page).toHaveURL(/\/category\/bakery/);
   });
 
-  test("Search navigates to search results", { tag: "@a1" }, async ({ page }) => {
+  test("Subcategories are displayed under categories in left menu and work", { tag: "@a1" }, async ({ page }) => {
     await page.goto("/");
-    await page.getByPlaceholder("Search").fill("Chicken");
+    await page.locator('button[aria-label="Toggle left menu"]').click();
+    await page.locator('button', { hasText: "▼" }).first().click();
+    await expect(page.locator('nav').getByRole("link", { name: "Chicken" })).toBeVisible();
+    await expect(page.locator('nav').getByRole("link", { name: "Beef" })).toBeVisible();
+    await expect(page.locator('nav').getByRole("link", { name: "Lamb" })).toBeVisible();
+    await expect(page.locator('nav').getByRole("link", { name: "Seafood", exact: true })).toBeVisible();
+    await page.locator('nav').getByRole("link", { name: "Chicken" }).click();
+    await expect(page).toHaveURL(/sub=chicken/);
+  });
+
+  test("Searching from home page navigates to search page", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    await page.getByPlaceholder("Search").first().fill("Chicken");
     await expect(page).toHaveURL(/\/search\?q=Chicken/);
   });
 
   test("Dark mode toggle switches theme", { tag: "@a1" }, async ({ page }) => {
     await page.goto("/");
-    const html = await page.getAttribute("html", "data-theme");
-    if (html === "dark") {
-      await page.getByText("Light Mode").click();
-      await expect(await page.getAttribute("html", "data-theme")).toBe("light");
+    const html = page.locator("html");
+    const currentTheme = await html.getAttribute("data-theme");
+    await page.locator('button[aria-label="Toggle theme"]').click();
+    if (currentTheme === "dark") {
+      await expect(html).toHaveAttribute("data-theme", "light");
     } else {
-      await page.getByText("Dark Mode").click();
-      await expect(await page.getAttribute("html", "data-theme")).toBe("dark");
+      await expect(html).toHaveAttribute("data-theme", "dark");
     }
   });
 
-  test("Right menu shows sign in when logged out", { tag: "@a1" }, async ({ page }) => {
+  test("Right menu shows sign in button and redirects to login page", { tag: "@a1" }, async ({ page }) => {
     await page.goto("/");
+    await page.getByText("Log In").click();
     await expect(page.getByText("Sign in to add items to your cart.")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Sign In" })).toBeVisible();
+    await page.getByRole("link", { name: "Sign in" }).click();
+    await expect(page).toHaveURL(/\/login/);
   });
 
-  test("Register link shows when logged out", { tag: "@a1" }, async ({ page }) => {
+  test("Right menu shows register link and redirects to register page", { tag: "@a1" }, async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("link", { name: /register/i })).toBeVisible();
+    await page.getByText("Log In").click();
+    await page.getByRole("link", { name: /register/i }).click();
+    await expect(page).toHaveURL(/\/register/);
   });
 
-  test("Clicking product navigates to detail page", { tag: "@a1" }, async ({ page }) => {
+  test("Clicking a product navigates to product detail page", { tag: "@a1" }, async ({ page }) => {
     await page.goto("/");
     await page.locator('[data-test-id^="product-"]').first().click();
     await expect(page).toHaveURL(/\/product\/\d+/);
@@ -90,14 +89,6 @@ test.describe("HOME SCREEN", () => {
     await page.getByRole("button", { name: "Sign In" }).click();
     await expect(page).toHaveURL("/");
     await expect(page.getByRole("heading", { name: /Cart/ })).toBeVisible();
-  });
-
-  test("Logout button shows when logged in", { tag: "@a1" }, async ({ page }) => {
-    await page.goto("/login");
-    await page.getByLabel("Email").fill("test@test.com");
-    await page.getByLabel("Password").fill("password");
-    await page.getByRole("button", { name: "Sign In" }).click();
-    await expect(page).toHaveURL("/");
     await expect(page.getByText("Logout")).toBeVisible();
   });
 
@@ -109,5 +100,12 @@ test.describe("HOME SCREEN", () => {
     await expect(page).toHaveURL("/");
     await page.locator('[data-test-id^="product-"]').first().getByText("Add to cart").click();
     await expect(page.getByText(/Cart \(\d+\)/)).toBeVisible();
+  });
+
+  test("Specials row shows on special products", { tag: "@a1" }, async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator('span').filter({ hasText: /^Specials$/ })).toBeVisible();
+    const specialItems = page.locator('[data-test-id^="special-"]');
+    await expect(specialItems).toHaveCount(4);
   });
 });

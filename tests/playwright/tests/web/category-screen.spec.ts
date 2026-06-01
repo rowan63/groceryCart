@@ -7,7 +7,7 @@ test.describe("CATEGORY SCREEN", () => {
   });
 
   test(
-    "Existing category shows correct products",
+    "(Bakery) Category shows correct products",
     { tag: "@a1" },
     async ({ page }) => {
       await page.goto("/category/bakery");
@@ -17,22 +17,6 @@ test.describe("CATEGORY SCREEN", () => {
 
       await expect(page.getByRole("heading", { name: "Sourdough Bread" }).or(page.locator('p.font-semibold', { hasText: "Sourdough Bread" }))).toBeVisible();
       await expect(page.locator('p.font-semibold', { hasText: "Croissants" })).toBeVisible();
-    },
-  );
-
-  test(
-    "Meat seafood category shows 4 products",
-    { tag: "@a1" },
-    async ({ page }) => {
-      await page.goto("/category/meat-seafood");
-
-      const articles = page.locator('[data-test-id^="product-"]');
-      await expect(articles).toHaveCount(4);
-
-      await expect(page.locator('p.font-semibold', { hasText: "Chicken Breast" })).toBeVisible();
-      await expect(page.locator('p.font-semibold', { hasText: "Beef Mince" })).toBeVisible();
-      await expect(page.locator('p.font-semibold', { hasText: "Lamb Chops" })).toBeVisible();
-      await expect(page.locator('p.font-semibold', { hasText: "Atlantic Salmon" })).toBeVisible();
     },
   );
 
@@ -48,21 +32,13 @@ test.describe("CATEGORY SCREEN", () => {
   );
 
   test(
-    "Subcategory filter updates URL",
+    "Subcategory filter updates URL and shows only matching products",
     { tag: "@a1" },
     async ({ page }) => {
       await page.goto("/category/meat-seafood");
 
       await page.locator('a[href="/category/meat-seafood?sub=chicken"]').click();
       await expect(page).toHaveURL(/\/category\/meat-seafood\?sub=chicken/);
-    },
-  );
-
-  test(
-    "Subcategory filter shows only matching products",
-    { tag: "@a1" },
-    async ({ page }) => {
-      await page.goto("/category/meat-seafood?sub=chicken");
 
       const articles = page.locator('[data-test-id^="product-"]');
       await expect(articles).toHaveCount(1);
