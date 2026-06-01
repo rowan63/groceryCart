@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { Product } from "@prisma/client";
-import { updateProduct, createProduct } from "../actions";
+import { updateProduct, createProduct, revalidateProducts } from "../actions";
 
 type Errors = {
     _errors?: string[];
@@ -20,6 +20,7 @@ export function ProductForm({ product }: { product?: Product }) {
     const [category, setCategory] = useState(product?.category ?? "");
     const [subcategory, setSubcategory] = useState(product?.subcategory ?? "");
     const [stock, setStock] = useState(product?.stock.toString() ?? "");
+    const [imageUrl, setImageUrl] = useState(product?.imageUrl ?? "");
     const [errors, setErrors] = useState<Errors>({});
     const [saveError, setSaveError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
@@ -36,6 +37,7 @@ export function ProductForm({ product }: { product?: Product }) {
         formData.set("category", category);
         formData.set("subcategory", subcategory);
         formData.set("stock", stock);
+        formData.set("imageUrl", imageUrl);
 
         const result = product
             ? await updateProduct(product.id, formData)
@@ -46,6 +48,7 @@ export function ProductForm({ product }: { product?: Product }) {
             setSaveError("Please fix the errors before saving");
         } else {
             setSuccessMessage(product ? "Product updated successfully" : "Product created successfully");
+            await revalidateProducts();
         }
     }
 
@@ -94,6 +97,11 @@ export function ProductForm({ product }: { product?: Product }) {
                         <label htmlFor="stock" className="text-xs font-medium text-gray-600">Stock</label>
                         <input id="stock" value={stock} onChange={(e) => setStock(e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75]" />
                         {errors.stock?._errors?.[0] && <p className="text-xs text-red-400">{errors.stock._errors[0]}</p>}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="imageUrl" className="text-xs font-medium text-gray-600">Image URL</label>
+                        <input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75]" />
+                        {imageUrl && <img data-test-id="image-preview" src={imageUrl} alt="preview" className="mt-2 rounded-lg w-full max-h-48 object-cover" />}
                     </div>
                     {saveError && <p className="text-xs text-red-400 font-medium">{saveError}</p>}
                     {successMessage && <p className="text-xs text-[#1D9E75] font-medium">{successMessage}</p>}
