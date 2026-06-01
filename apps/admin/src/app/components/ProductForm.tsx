@@ -21,9 +21,13 @@ export function ProductForm({ product }: { product?: Product }) {
     const [subcategory, setSubcategory] = useState(product?.subcategory ?? "");
     const [stock, setStock] = useState(product?.stock.toString() ?? "");
     const [imageUrl, setImageUrl] = useState(product?.imageUrl ?? "");
+    const [onSpecial, setOnSpecial] = useState(product?.onSpecial ?? false);
+    const [salePrice, setSalePrice] = useState(product?.salePrice?.toString() ?? "");
     const [errors, setErrors] = useState<Errors>({});
     const [saveError, setSaveError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+
+
 
     async function handleSave() {
         setErrors({});
@@ -38,6 +42,8 @@ export function ProductForm({ product }: { product?: Product }) {
         formData.set("subcategory", subcategory);
         formData.set("stock", stock);
         formData.set("imageUrl", imageUrl);
+        formData.set("onSpecial", onSpecial ? "1" : "0");
+        formData.set("salePrice", onSpecial ? salePrice : "");
 
         const result = product
             ? await updateProduct(product.id, formData)
@@ -103,6 +109,19 @@ export function ProductForm({ product }: { product?: Product }) {
                         <input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75]" />
                         {imageUrl && <img data-test-id="image-preview" src={imageUrl} alt="preview" className="mt-2 rounded-lg w-full max-h-48 object-cover" />}
                     </div>
+                    <div className="flex items-center gap-3">
+                        <input id="onSpecial" type="checkbox" checked={onSpecial} onChange={(e) => {
+                            setOnSpecial(e.target.checked);
+                            if (!e.target.checked) setSalePrice("");
+                        }} className="w-4 h-4 accent-[#1D9E75]" />
+                        <label htmlFor="onSpecial" className="text-xs font-medium text-gray-600">On Special</label>
+                    </div>
+                    {onSpecial && (
+                        <div className="flex flex-col gap-1">
+                            <label htmlFor="salePrice" className="text-xs font-medium text-gray-600">Sale Price</label>
+                            <input id="salePrice" value={salePrice} onChange={(e) => setSalePrice(e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1D9E75]" />
+                        </div>
+                    )}
                     {saveError && <p className="text-xs text-red-400 font-medium">{saveError}</p>}
                     {successMessage && <p className="text-xs text-[#1D9E75] font-medium">{successMessage}</p>}
                     <button type="button" onClick={handleSave} className="self-start bg-[#1D9E75] hover:bg-[#0F6E56] text-white rounded-lg px-5 py-2 text-sm font-semibold transition-colors">Save</button>
