@@ -26,21 +26,16 @@ test.describe("ADMIN HOME SCREEN", () => {
   );
 
   test(
-    "Login page has email and password fields",
+    "Login page has email and password fields and valid credentials log in",
     { tag: "@a3" },
     async ({ page }) => {
       await page.goto("/");
       await expect(page.getByLabel("Email")).toBeVisible();
       await expect(page.getByLabel("Password")).toBeVisible();
       await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
-    },
-  );
-
-  test(
-    "Valid admin credentials logs in",
-    { tag: "@a3" },
-    async ({ page }) => {
-      await adminLogin(page);
+      await page.getByLabel("Email").fill("admin@test.com");
+      await page.getByLabel("Password").fill("password");
+      await page.getByRole("button", { name: "Sign in" }).click();
       await expect(page.getByText("FreshCart Admin")).toBeVisible();
       await expect(page.locator("article")).not.toHaveCount(0);
     },
@@ -58,7 +53,7 @@ test.describe("ADMIN HOME SCREEN", () => {
   );
 
   test(
-    "Invalid credentials stays on login page",
+    "Invalid credentials dont work",
     { tag: "@a3" },
     async ({ page }) => {
       await page.goto("/");
@@ -83,19 +78,11 @@ test.describe("ADMIN HOME SCREEN", () => {
   );
 
   test(
-    "Logout button visible when logged in",
+    "Logout button visible when logged in and works",
     { tag: "@a3" },
     async ({ page }) => {
       await adminLogin(page);
       await expect(page.getByRole("button", { name: "Logout" })).toBeVisible();
-    },
-  );
-
-  test(
-    "Clicking logout logs user out",
-    { tag: "@a3" },
-    async ({ page }) => {
-      await adminLogin(page);
       await page.getByRole("button", { name: "Logout" }).click();
       await expect(page.getByLabel("Email")).toBeVisible();
       await expect(page.locator("article")).toHaveCount(0);
