@@ -11,7 +11,7 @@ export async function seed() {
   await client.db.product.deleteMany();
   await client.db.user.deleteMany();
 
-  await client.db.user.create({
+  const testUser = await client.db.user.create({
     data: {
       email: "test@test.com",
       password: await bcrypt.hash("password", 10),
@@ -29,12 +29,15 @@ export async function seed() {
     },
   });
 
+  const createdProducts = [];
   for (const product of products) {
-    await client.db.product.create({
+    const created = await client.db.product.create({
       data: {
         name: product.name,
         description: product.description,
         price: product.price,
+        salePrice: product.salePrice,
+        onSpecial: product.onSpecial ?? false,
         imageUrl: product.imageUrl,
         category: product.category,
         subcategory: product.subcategory,
@@ -42,7 +45,20 @@ export async function seed() {
         active: product.active,
       },
     });
+    createdProducts.push(created);
   }
+
+  const cart = await client.db.cart.create({
+    data: { userId: testUser.id },
+  });
+
+  await client.db.cartItem.create({
+    data: {
+      cartId: cart.id,
+      productId: createdProducts[0]!.id,
+      quantity: 1,
+    },
+  });
 }
 
 seed();
