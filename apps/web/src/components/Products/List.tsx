@@ -1,7 +1,7 @@
 "use client"
 
 import type { Product } from "@prisma/client";
-import { AddToCartButton } from "@/components/Menu/AddToCartButton";
+import { AddToCartButton } from "../Menu/AddToCartButton";
 
 export function ProductList({ products }: { products: Product[] }) {
   if (products.length === 0) return <div className="text-sm text-gray-400 py-6">No products found.</div>

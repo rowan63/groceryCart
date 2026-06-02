@@ -17,13 +17,12 @@ test("renders non-selected summary item with count", async () => {
   await expect
     .element(getByText("Link to Content").element().parentElement!)
     .toHaveAttribute("href", "/my/link");
-
   await expect
     .element(getByText("Link to Content").element().parentElement!)
-    .not.toHaveClass("selected");
+    .not.toHaveClass("bg-[#E1F5EE]");
 });
 
-test("renders selected summary item with count", async () => {
+test("renders selected summary item", async () => {
   const { getByText } = render(
     <SummaryItem
       count={10}
@@ -33,8 +32,7 @@ test("renders selected summary item with count", async () => {
       title="Content Title"
     />,
   );
-
   await expect
     .element(getByText("Link to Content").element().parentElement!)
-    .toHaveClass("selected");
+    .toHaveClass("bg-[#E1F5EE]");
 });
