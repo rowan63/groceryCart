@@ -84,4 +84,4 @@ turbo test-3   # Admin
 
 ## API Documentation
 
-See [API_WEB.md](./API_WEB.md) and [API_ADMIN.md](./API_ADMIN.md) for full API documentation.
+See [APIWEBDOC.md](./APIWEBDOC.md) and [APIADMINDOC.md](./APIADMINDOC.md) for full API documentation.
