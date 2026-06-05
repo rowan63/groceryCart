@@ -51,6 +51,10 @@ jobs:
         working-directory: apps/web
  
       - name: Install Playwright Browsers
+        run: pnpm exec playwright install chromium --with-deps
+        working-directory: packages/ui
+
+      - name: Install Playwright Browsers (E2E)
         run: pnpm playwright install chromium --with-deps
         working-directory: tests/playwright
  
