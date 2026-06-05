@@ -17,7 +17,7 @@ export async function login(formData: FormData) {
     if (user && user.role === "admin" && await compare(password, user.password)) {
         const token = jwt.sign({ authenticated: true }, env.JWT_SECRET || "secret");
         const cookieStore = await cookies();
-        cookieStore.set("auth_token", token, {
+        cookieStore.set("admin_token", token, {
             httpOnly: true,
             path: "/",
         });
@@ -27,7 +27,7 @@ export async function login(formData: FormData) {
 
 export async function logout() {
     const cookieStore = await cookies();
-    cookieStore.delete("auth_token");
+    cookieStore.delete("admin_token");
     redirect("/");
 }
 

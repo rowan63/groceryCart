@@ -15,8 +15,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Grocery Cart",
-  description: "Buy all of you're favourite groceries online!",
+  title: "FreshCart",
+  description: "Buy all of your favourite groceries online!",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default async function RootLayout({

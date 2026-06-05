@@ -1,19 +1,28 @@
+import type { Product } from "@prisma/client";
 import { expect, test } from "vitest";
 import { render } from "vitest-browser-react";
-import { post1 } from "./List.test";
-import { BlogListItem } from "./ListItem";
+import { ProductListItem } from "./ListItem";
 
-test("render blog post data", async () => {
-  const { getByText } = render(<BlogListItem post={post1} />);
+const product: Product = {
+  id: 1,
+  name: "Chicken Breast",
+  description: "Free range chicken breast",
+  price: 12.99,
+  salePrice: null,
+  onSpecial: false,
+  imageUrl: "https://example.com/image.jpg",
+  category: "meat-seafood",
+  subcategory: "Chicken",
+  stock: 50,
+  active: true,
+};
 
-  await expect.element(getByText("Hello, World")).toBeVisible();
-  await expect
-    .element(getByText("Hello, World"))
-    .toHaveAttribute("href", "/post/hello-world");
-  await expect.element(getByText("Cat")).toBeVisible();
-  await expect.element(getByText("#Hello")).toBeVisible();
-  await expect.element(getByText("#World")).toBeVisible();
-  await expect.element(getByText("01 Oct 2024")).toBeVisible();
-  await expect.element(getByText("200 views")).toBeVisible();
-  await expect.element(getByText("30 likes")).toBeVisible();
+test("renders product data", async () => {
+  const { getByText, getByRole } = render(<ProductListItem product={product} />);
+  await expect.element(getByRole("link", { name: "Chicken Breast" })).toBeVisible();
+  await expect.element(getByText("Free range chicken breast")).toBeVisible();
+  await expect.element(getByText("meat-seafood")).toBeVisible();
+  await expect.element(getByText("Chicken", { exact: true }).first()).toBeVisible();
+  await expect.element(getByText("$12.99")).toBeVisible();
+  await expect.element(getByText("50 in stock")).toBeVisible();
 });

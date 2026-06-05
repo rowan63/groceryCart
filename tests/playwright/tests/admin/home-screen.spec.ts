@@ -47,7 +47,7 @@ test.describe("ADMIN HOME SCREEN", () => {
     async ({ page }) => {
       await adminLogin(page);
       const cookies = await page.context().cookies();
-      const authCookie = cookies.find((c) => c.name === "auth_token");
+      const authCookie = cookies.find((c) => c.name === "admin_token");
       expect(authCookie).toBeDefined();
     },
   );

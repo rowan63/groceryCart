@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 
     const token = jwt.sign({ authenticated: true }, env.JWT_SECRET || "secret");
     const cookieStore = await cookies();
-    cookieStore.set("auth_token", token, {
+    cookieStore.set("admin_token", token, {
         httpOnly: true,
         path: "/",
     });
@@ -22,6 +22,6 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE() {
     const cookieStore = await cookies();
-    cookieStore.delete("auth_token");
+    cookieStore.delete("admin_token");
     return NextResponse.json({ success: true });
 }
