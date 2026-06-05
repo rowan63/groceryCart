@@ -13,8 +13,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Full stack Blog Admin",
-  description: "Administration of Full Stack Blog",
+  title: "FreshCart Admin",
+  description: "Administration of FreshCart",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
