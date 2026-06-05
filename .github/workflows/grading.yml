@@ -36,7 +36,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install chromium --with-deps
+        working-directory: tests/playwright
+        run: pnpm playwright install chromium --with-deps
       - name: Push Database
         run: pnpm --filter @repo/db db:push
       - name: Build
@@ -75,36 +76,36 @@ jobs:
           timeout: 10
           max-score: 1
 
-      - name: E2E Tests - Client
+      - name: E2E Tests - Client Part 1
         id: npm1
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
         with:
           working-directory: .
           test-name: Part 1 - Client
-          command: pnpm turbo test-1 --force
+          command: pnpm turbo test-1
           timeout: 10
           max-score: 1
 
-      - name: E2E Tests - Admin
+      - name: E2E Tests - Client Part 2
         id: npm2
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
         with:
           working-directory: .
-          test-name: Part 2 - Admin
-          command: pnpm turbo test-2 --force
+          test-name: Part 2 - Client
+          command: pnpm turbo test-2
           timeout: 10
           max-score: 1
 
-      - name: E2E Tests - Backend
+      - name: E2E Tests - Admin
         id: npm3
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
         with:
           working-directory: .
-          test-name: Part 3 - Backend
-          command: pnpm turbo test-3 --force
+          test-name: Part 3 - Admin
+          command: pnpm turbo test-3
           timeout: 10
           max-score: 1
 
